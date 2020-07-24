@@ -7,6 +7,7 @@ import java.awt.RenderingHints;
 import javax.swing.JPanel;
 
 
+@SuppressWarnings("serial")
 public class Canvas extends JPanel {
 
     protected static void setInterpolation(Graphics g, boolean bilinear) {

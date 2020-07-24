@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 
+@SuppressWarnings("serial")
 public class CanvasImage extends Canvas {
 
     private BufferedImage image;
@@ -32,7 +33,7 @@ public class CanvasImage extends Canvas {
         return image;
     }
 
-    private float getFitScale() {
+    private float getFitScale() { // TODO simplify, this was refactored out of else
 
         final int cw = (int) (getWidth() * (1 - ViewBorder));
         final int ch = (int) (getHeight() * (1 - ViewBorder));
@@ -43,12 +44,9 @@ public class CanvasImage extends Canvas {
         final float iratio = iw * 1.f / ih;
 
         float dw = cw;
-        float dh = ch;
 
         if (cratio > iratio) {
             dw = iw * ch / ih;
-        } else {
-            dh = ih * cw / iw;
         }
 
         float scale = dw / iw;
@@ -112,12 +110,6 @@ public class CanvasImage extends Canvas {
     public float getScale() {
         return (scale > 0) ? scale : getFitScale();
     }
-
-//    @Override
-//    public void setSize(int width, int height) {
-//        super.setSize(width, height);
-//        invalidate();
-//    }
 
     private static Color invertColor(Color color) {
         return color != Color.BLACK ? Color.BLACK : Color.WHITE;
