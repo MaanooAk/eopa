@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
-public class CanvasImage extends Canvas {
+public class CanvasGrid extends Canvas {
 
     private BufferedImage image;
+    private ImageDirectory directory;
 
     public final float ViewBorder = 0;
     public final int MaxScale = 32;
@@ -20,13 +23,14 @@ public class CanvasImage extends Canvas {
     public float currentScale = 0;
     public boolean currentInter = false;
 
-    public CanvasImage(BufferedImage image) {
-        setImage(image);
-    }
+    public int gridW = 8;
+    public int gridH = 6;
+    public int offset = 0;
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
-        repaint();
+    public CanvasGrid(ImageDirectory directory) {
+        this.directory = directory;
+
+        image = ImageLoader.load(directory.getCurrent());
     }
 
     public BufferedImage getImage() {
@@ -35,8 +39,8 @@ public class CanvasImage extends Canvas {
 
     private float getFitScale() { // TODO simplify, this was refactored out of else
 
-        final int cw = (int) (getWidth() * (1 - ViewBorder));
-        final int ch = (int) (getHeight() * (1 - ViewBorder));
+        final int cw = (int) (getWidth() * (1 - ViewBorder)) / gridW;
+        final int ch = (int) (getHeight() * (1 - ViewBorder)) / gridH;
         final float cratio = cw * 1.f / ch;
 
         final int iw = image.getWidth();
@@ -84,19 +88,29 @@ public class CanvasImage extends Canvas {
         }
         setInterpolation(g, currentInter);
 
-        final int dw = (int) (scale * image.getWidth());
-        final int dh = (int) (scale * image.getHeight());
+        final List<Path> all = directory.getAll();
 
-        final int dx = (getWidth() - dw) / 2;
-        final int dy = (getHeight() - dh) / 2;
+        for (int ix = 0; ix < gridW; ix++) {
+            for (int iy = 0; iy < gridH; iy++) {
+                final int index = ix + iy * gridW + offset;
+                if (index < 0 || index >= all.size()) continue;
 
-        if (mode == PaintMode.Alpha) {
-            g.setColor(invertColor(getBackground()));
-            g.fillRect(dx, dy, dw, dh);
+                final BufferedImage image = ImageLoader.load(all.get(index));
+                if (image == null) continue;
 
-        } else {
-            g.drawImage(image, dx, dy, dw, dh, this);
+                final int dw = (int) (scale * image.getWidth());
+                final int dh = (int) (scale * image.getHeight());
+
+                final int dx = ix * getWidth() / gridW + (getWidth() / gridW - dw) / 2;
+                final int dy = iy * getHeight() / gridH + (getHeight() / gridH - dh) / 2;
+
+                g.setClip(ix * getWidth() / gridW, iy * getHeight() / gridH,
+                        getWidth() / gridW - 1, getHeight() / gridH - 1);
+
+                g.drawImage(image, dx, dy, dw, dh, this);
+            }
         }
+
     }
 
     public float getScale() {
@@ -106,4 +120,5 @@ public class CanvasImage extends Canvas {
     private static Color invertColor(Color color) {
         return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
+
 }
