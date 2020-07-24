@@ -38,7 +38,7 @@ public class ImageDirectory {
     public List<Path> getAll() {
         try {
             return Files.list(directory)
-                    .filter(ImageManager::filterImage)
+                    .filter(ImageLoader::filterImage)
                     .sorted()
                     .collect(Collectors.toList());
 
