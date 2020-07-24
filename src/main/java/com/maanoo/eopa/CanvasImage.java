@@ -65,7 +65,7 @@ public class CanvasImage extends Canvas {
         return scale;
     }
 
-    public enum PaintMode {
+    public enum PaintMode { // TODO clean up
         Normal, Alpha;
     }
 
@@ -80,9 +80,13 @@ public class CanvasImage extends Canvas {
 
         if (image == null) return;
 
-        final float scale = getScale();
-        currentScale = scale;
-
+        final float scale;
+        if (!locked) {
+            scale = getScale();
+            currentScale = scale;
+        } else {
+            scale = currentScale;
+        }
 //        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (!locked) {
