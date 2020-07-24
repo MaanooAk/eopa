@@ -18,6 +18,10 @@ public class ImageDirectory {
         this.current = current;
     }
 
+    public void setCurrent(Path current) {
+        this.current = current;
+    }
+
     public Path next(int direction) {
 
         final List<Path> list = getAll();
