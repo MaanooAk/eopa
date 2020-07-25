@@ -14,15 +14,6 @@ public class CanvasGrid extends Canvas {
     private BufferedImage image;
     private ImageDirectory directory;
 
-    public final float ViewBorder = 0;
-    public final int MaxScale = 32;
-
-    public float scale = -1;
-    public boolean locked = false;
-
-    public float currentScale = 0;
-    public boolean currentInter = false;
-
     public int gridW = 8;
     public int gridH = 6;
     public int offset = 0;
@@ -30,7 +21,7 @@ public class CanvasGrid extends Canvas {
     public CanvasGrid(ImageDirectory directory) {
         this.directory = directory;
 
-        image = ImageLoader.load(directory.getCurrent());
+        image = ImageLoader.load(directory.getCurrent(), false);
     }
 
     public BufferedImage getImage() {
@@ -95,7 +86,7 @@ public class CanvasGrid extends Canvas {
                 final int index = ix + iy * gridW + offset;
                 if (index < 0 || index >= all.size()) continue;
 
-                final BufferedImage image = ImageLoader.load(all.get(index));
+                final BufferedImage image = ImageLoader.load(all.get(index), false);
                 if (image == null) continue;
 
                 final int dw = (int) (scale * image.getWidth());

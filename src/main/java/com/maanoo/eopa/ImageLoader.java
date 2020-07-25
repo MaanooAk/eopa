@@ -19,10 +19,11 @@ public final class ImageLoader {
 
     private static final HashMap<Path, BufferedImage> store = new HashMap<Path, BufferedImage>();
 
-    public static BufferedImage load(Path path) {
-        final BufferedImage storedImage = store.get(path);
-        if (storedImage != null) return storedImage;
-
+    public static BufferedImage load(Path path, boolean force) {
+        if (!force) {
+            final BufferedImage storedImage = store.get(path);
+            if (storedImage != null) return storedImage;
+        }
         final BufferedImage image = loadImage(path);
         store.put(path, image);
         return image;

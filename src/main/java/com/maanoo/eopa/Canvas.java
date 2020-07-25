@@ -10,6 +10,15 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public abstract class Canvas extends JPanel {
 
+    public final float ViewBorder = 0;
+    public final int MaxScale = 32;
+
+    public float scale = -1;
+    public boolean locked = false;
+
+    public float currentScale = 0;
+    public boolean currentInter = false;
+
     public enum PaintMode { // TODO clean up
         Normal, Alpha;
     }
