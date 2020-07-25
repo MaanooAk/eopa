@@ -49,84 +49,10 @@ public class Scene {
 
     public static Scene createImage(EopaFrame frame, Path path) {
 
-        final CanvasImage c = new CanvasImage(ImageLoader.load(path));
+        final CanvasImage c = new CanvasImage(ImageLoader.load(path, false));
 
         final String name = path.getFileName().toString();
-
-        final JPopupMenu menu = new JPopupMenu();
-
-        final JMenuItem nameMenuItem = new JMenuItem(name);
-        menu.add(nameMenuItem).setEnabled(false);
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Scale to Fit", KeyEvent.VK_F, () -> {
-            c.scale = -2;
-        }, c);
-        createMenuItem(menu, "Scale of 1", KeyEvent.VK_1, () -> {
-            c.scale = 1;
-        }, c);
-        createMenuItem(menu, "Scale of 4", KeyEvent.VK_2, () -> {
-            c.scale = 4;
-        }, c);
-        createMenuItem(menu, "Scale of 8", KeyEvent.VK_3, () -> {
-            c.scale = 8;
-        }, c);
-        createMenuItem(menu, "Scale of 16", KeyEvent.VK_4, () -> {
-            c.scale = 16;
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Copy image", KeyEvent.VK_I, () -> {
-            ClipboardManager.set(path);
-        }, c);
-        createMenuItem(menu, "Copy image filename", KeyEvent.VK_C, () -> {
-            ClipboardManager.set(path.getFileName().toString());
-        }, c);
-        createMenuItem(menu, "Copy image path", KeyEvent.VK_P, () -> {
-            ClipboardManager.set(path.toString());
-        }, c);
-        createMenuItem(menu, "Copy directory path", KeyEvent.VK_D, () -> {
-            ClipboardManager.set(path.getParent().toString());
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
-            c.setBackground(invertColor(c.getBackground()));
-        }, c);
-
-        createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
-            // TODO
-            JOptionPane.showMessageDialog(frame, "TODO");
-        }, c);
-
-        createMenuItem(menu, "Lock Dynamic Attributes", KeyEvent.VK_L, () -> {
-            c.locked = !c.locked;
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Top Most Window", KeyEvent.VK_T, () -> {
-            frame.setAlwaysOnTop(!frame.isAlwaysOnTop());
-        }, c);
-
-        createMenuItem(menu, "Fit Window", KeyEvent.VK_S, () -> {
-            fitWindow(frame, c, 0);
-        }, c);
-        createMenuItem(menu, "Fit Window Padded", KeyEvent.VK_W, () -> {
-            fitWindow(frame, c, 2);
-        }, c);
-        createMenuItem(menu, "Scale of 1 and Fit Window", KeyEvent.VK_Q, () -> {
-            c.scale = 1;
-            c.currentScale = 1;
-            fitWindow(frame, c, 0);
-        }, c);
-
-        createMenuItem(menu, "Fullscreen", KeyEvent.VK_F11, () -> {
-            final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-            device.setFullScreenWindow(device.getFullScreenWindow() == null ? frame : null);
-        }, c);
+        final JPopupMenu menu = createMenu(frame, path, c, name, true);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -238,11 +164,8 @@ public class Scene {
 
         final CanvasGrid c = new CanvasGrid(new ImageDirectory(path));
 
-        final JPopupMenu menu = new JPopupMenu();
-
-        final JMenuItem nameMenuItem = new JMenuItem(path.getParent().toString());
-        menu.add(nameMenuItem).setEnabled(false);
-        menu.add(new JSeparator());
+        final String name = path.getParent().getFileName().toString();
+        final JPopupMenu menu = createMenu(frame, path, c, name, false);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -265,49 +188,29 @@ public class Scene {
                     menu.show(c, 0, 0);
 
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-
-                    final int colors[] = new int[4];
-                    final BufferedImage buffer = new BufferedImage(c.getWidth(), c.getHeight(), c.getImage().getType());
-
-                    c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Alpha);
-                    buffer.getData().getPixel(e.getX(), e.getY(), colors);
-
-                    if (colors[0] != c.getBackground().getRed()) {
-
-                        c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Normal);
-                        buffer.getData().getPixel(e.getX(), e.getY(), colors);
-
-                        final String[] options = new String[] {
-                                hex(colors[0]) + hex(colors[1]) + hex(colors[2]),
-                        };
-                        final int selected = JOptionPane.showOptionDialog(null,
-                                String.format("R: %d\nG: %d\nB: %d", colors[0], colors[1], colors[2]), "Color",
-                                JOptionPane.OK_OPTION,
-                                JOptionPane.INFORMATION_MESSAGE, null, options, null);
-
-                        if (selected != -1) {
-                            ClipboardManager.set(options[selected]);
-                        }
-
-                    } else {
-                        menu.show(c, 0, 0);
-                    }
+                    menu.show(c, 0, 0);
 
                 }
             }
 
-            private String hex(int num) {
-                if (num < 0x10) return "0" + Integer.toString(num, 16);
-                return Integer.toString(num, 16);
-            }
-
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
+                final boolean pos = e.getWheelRotation() > 0;
 
-                if (e.getWheelRotation() > 0) {
-                    c.scale = c.getScale() / 1.1f;
+                if (e.isShiftDown() || e.isAltDown() || e.isControlDown()) {
+
+                    if (pos) {
+                        c.offset += c.gridW;
+                    } else {
+                        c.offset -= c.gridW;
+                    }
+
                 } else {
-                    c.scale = c.getScale() * 1.1f;
+                    if (pos) {
+                        c.scale = c.getScale() / 1.1f;
+                    } else {
+                        c.scale = c.getScale() * 1.1f;
+                    }
                 }
                 c.repaint();
             }
@@ -357,6 +260,88 @@ public class Scene {
         };
 
         return new Scene(menu, c, mouseListener, keyListener);
+    }
+
+    private static JPopupMenu createMenu(EopaFrame frame, Path path, Canvas c, String name, boolean single) {
+        final JPopupMenu menu = new JPopupMenu();
+
+        final JMenuItem nameMenuItem = new JMenuItem(name);
+        menu.add(nameMenuItem).setEnabled(false);
+        menu.add(new JSeparator());
+
+        createMenuItem(menu, "Scale to Fit", KeyEvent.VK_F, () -> {
+            c.scale = -2;
+        }, c);
+        createMenuItem(menu, "Scale of 1", KeyEvent.VK_1, () -> {
+            c.scale = 1;
+        }, c);
+        createMenuItem(menu, "Scale of 4", KeyEvent.VK_2, () -> {
+            c.scale = 4;
+        }, c);
+        createMenuItem(menu, "Scale of 8", KeyEvent.VK_3, () -> {
+            c.scale = 8;
+        }, c);
+        createMenuItem(menu, "Scale of 16", KeyEvent.VK_4, () -> {
+            c.scale = 16;
+        }, c);
+
+        menu.add(new JSeparator());
+
+        createMenuItem(menu, "Copy image", KeyEvent.VK_I, () -> {
+            ClipboardManager.set(path);
+        }, c);
+        createMenuItem(menu, "Copy image filename", KeyEvent.VK_C, () -> {
+            ClipboardManager.set(path.getFileName().toString());
+        }, c);
+        createMenuItem(menu, "Copy image path", KeyEvent.VK_P, () -> {
+            ClipboardManager.set(path.toString());
+        }, c);
+        createMenuItem(menu, "Copy directory path", KeyEvent.VK_D, () -> {
+            ClipboardManager.set(path.getParent().toString());
+        }, c);
+
+        menu.add(new JSeparator());
+
+        createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
+            c.setBackground(invertColor(c.getBackground()));
+        }, c);
+
+        createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
+            // TODO
+            JOptionPane.showMessageDialog(frame, "TODO");
+        }, c);
+
+        createMenuItem(menu, "Lock Dynamic Attributes", KeyEvent.VK_L, () -> {
+            c.locked = !c.locked;
+        }, c);
+
+        menu.add(new JSeparator());
+
+        createMenuItem(menu, "Top Most Window", KeyEvent.VK_T, () -> {
+            frame.setAlwaysOnTop(!frame.isAlwaysOnTop());
+        }, c);
+
+        if (single) {
+            final CanvasImage ci = (CanvasImage) c;
+
+            createMenuItem(menu, "Fit Window", KeyEvent.VK_S, () -> {
+                fitWindow(frame, ci, 0);
+            }, c);
+            createMenuItem(menu, "Fit Window Padded", KeyEvent.VK_W, () -> {
+                fitWindow(frame, ci, 2);
+            }, c);
+            createMenuItem(menu, "Scale of 1 and Fit Window", KeyEvent.VK_Q, () -> {
+                c.scale = 1;
+                c.currentScale = 1;
+                fitWindow(frame, ci, 0);
+            }, c);
+        }
+
+        createMenuItem(menu, "Fullscreen", KeyEvent.VK_F11, () -> {
+            final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+            device.setFullScreenWindow(device.getFullScreenWindow() == null ? frame : null);
+        }, c);
+        return menu;
     }
 
     // ===

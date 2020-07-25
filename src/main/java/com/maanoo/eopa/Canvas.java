@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public abstract class Canvas extends JPanel {
 
-    public final float ViewBorder = 0;
-    public final int MaxScale = 32;
+    public static final float ViewBorder = 0;
+    public static final int MaxScale = 32;
 
     public float scale = -1;
     public boolean locked = false;
