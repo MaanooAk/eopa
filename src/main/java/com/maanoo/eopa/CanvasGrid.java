@@ -1,6 +1,5 @@
 package com.maanoo.eopa;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -124,10 +123,6 @@ public class CanvasGrid extends Canvas {
         // TODO limit also the end
 
         repaint();
-    }
-
-    private static Color invertColor(Color color) {
-        return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
 
 }

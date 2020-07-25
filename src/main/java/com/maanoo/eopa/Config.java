@@ -12,4 +12,7 @@ public class Config {
     public float scaleGrid = -1;
 
     public int edgeBorder = 50;
+
+    public int startWidth = 800;
+    public int startHeight = 600;
 }
