@@ -57,12 +57,13 @@ public class Scene {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                final int edgeBorder = Config.Active.edgeBorder;
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     // TODO on drag, move image
 
-                    final boolean edgeL = e.getX() < 50;
-                    final boolean edgeR = e.getX() > c.getWidth() - 50;
+                    final boolean edgeL = e.getX() < edgeBorder;
+                    final boolean edgeR = e.getX() > c.getWidth() - edgeBorder;
 
                     if (edgeL) {
                         frame.setImage(frame.getDirectory().next(-1));
@@ -70,7 +71,7 @@ public class Scene {
                     } else if (edgeR) {
                         frame.setImage(frame.getDirectory().next(+1));
 
-                    } else if (e.getY() > c.getHeight() - 50) {
+                    } else if (e.getY() > c.getHeight() - edgeBorder) {
                         frame.setImage(null);
                     }
 
@@ -185,8 +186,9 @@ public class Scene {
                 super.mousePressed(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    final boolean edgeU = e.getY() < 50;
-                    final boolean edgeD = e.getY() > c.getHeight() - 50;
+                    final int edgeBorder = Config.Active.edgeBorder;
+                    final boolean edgeU = e.getY() < edgeBorder;
+                    final boolean edgeD = e.getY() > c.getHeight() - edgeBorder;
 
                     if (edgeU) {
                         c.addOffset(-c.gridW);
@@ -231,10 +233,11 @@ public class Scene {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 final boolean pos = e.getWheelRotation() > 0;
 
-                final boolean edgeU = e.getY() < 50;
-                final boolean edgeD = e.getY() > c.getHeight() - 50;
-                final boolean edgeL = e.getX() < 50;
-                final boolean edgeR = e.getX() > c.getWidth() - 50;
+                final int edgeBorder = Config.Active.edgeBorder;
+                final boolean edgeU = e.getY() < edgeBorder;
+                final boolean edgeD = e.getY() > c.getHeight() - edgeBorder;
+                final boolean edgeL = e.getX() < edgeBorder;
+                final boolean edgeR = e.getX() > c.getWidth() - edgeBorder;
 
                 if (e.isShiftDown() || e.isAltDown() || e.isControlDown() || edgeD || edgeU || edgeL || edgeR) {
 
@@ -349,7 +352,8 @@ public class Scene {
             menu.add(new JSeparator());
 
             createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
-                c.setBackground(invertColor(c.getBackground()));
+                final Color newBackground = invertColor(c.getBackground());
+                c.setBackground(Config.Active.background = newBackground);
             }, c);
 
             createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {

@@ -25,6 +25,9 @@ public class CanvasGrid extends Canvas {
             // TODO clean up rounding
             addOffset(((index - gridH / 2 * gridW) / gridW) * gridW);
         }
+
+        setBackground(Config.Active.background);
+        scale = Config.Active.scaleGrid;
     }
 
     // TODO simplify, this was re-factored out of else
