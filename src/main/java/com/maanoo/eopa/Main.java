@@ -13,6 +13,10 @@ public final class Main {
 
     private Main() {}
 
+    // TODO move zoomed in images
+    // TODO unload images
+    // TODO clone window
+
     public static void main(String[] args) {
 
         try {

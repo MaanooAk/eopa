@@ -376,10 +376,9 @@ public class Scene {
                 c.repaint();
             }, c);
 
-            createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
-                // TODO
-                JOptionPane.showMessageDialog(frame, "TODO");
-            }, c);
+//            createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
+//                JOptionPane.showMessageDialog(frame, "TODO"); // TODO
+//            }, c);
 
             createMenuItem(menu, "Lock Dynamic Attributes", KeyEvent.VK_L, () -> {
                 c.locked = !c.locked;

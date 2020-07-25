@@ -116,7 +116,7 @@ public class CanvasGrid extends Canvas {
     public void addOffset(int d) {
         offset += d;
 
-        final int screenOffset = gridW * gridH;
+        final int screenOffset = gridW * (gridH / 2);
         if (offset < -screenOffset) offset = -screenOffset;
 
         // TODO limit also the end

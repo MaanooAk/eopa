@@ -19,12 +19,12 @@ public abstract class Canvas extends JPanel {
     public float currentScale = 0;
     public boolean currentInter = false;
 
-    public enum PaintMode { // TODO clean up
+    public enum PaintMode {
         Normal, Alpha;
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public final void paintComponent(Graphics g) {
         paintComponent(g, PaintMode.Normal);
     }
 
@@ -34,11 +34,12 @@ public abstract class Canvas extends JPanel {
 
     protected abstract float getFitScale();
 
-    public float getScale() {
+    public final float getScale() {
         return (scale > 0) ? scale : getFitScale();
     }
 
     protected static void setInterpolation(Graphics g, boolean bilinear) {
+
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 bilinear ? RenderingHints.VALUE_INTERPOLATION_BILINEAR
                         : RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
