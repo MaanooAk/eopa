@@ -32,6 +32,12 @@ public abstract class Canvas extends JPanel {
         super.paintComponent(graphics);
     }
 
+    protected abstract float getFitScale();
+
+    public float getScale() {
+        return (scale > 0) ? scale : getFitScale();
+    }
+
     protected static void setInterpolation(Graphics g, boolean bilinear) {
         ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 bilinear ? RenderingHints.VALUE_INTERPOLATION_BILINEAR

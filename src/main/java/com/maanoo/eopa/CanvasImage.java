@@ -28,7 +28,9 @@ public class CanvasImage extends Canvas {
         return ImageLoader.load(path, false);
     }
 
-    private float getFitScale() { // TODO simplify, this was refactored out of else
+    // TODO simplify, this was refactored out of else
+    @Override
+    protected float getFitScale() {
         final BufferedImage image = getImage();
 
         final int cw = (int) (getWidth() * (1 - ViewBorder));
@@ -94,10 +96,6 @@ public class CanvasImage extends Canvas {
         } else {
             g.drawImage(image, dx, dy, dw, dh, this);
         }
-    }
-
-    public float getScale() {
-        return (scale > 0) ? scale : getFitScale();
     }
 
     private static Color invertColor(Color color) {

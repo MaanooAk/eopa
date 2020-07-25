@@ -30,7 +30,8 @@ public class CanvasGrid extends Canvas {
     }
 
     // TODO simplify, this was re-factored out of else
-    private float getFitScale() {
+    @Override
+    protected float getFitScale() {
 
         final BufferedImage image = ImageLoader.load(directory.getCurrent(), false);
 
@@ -104,10 +105,6 @@ public class CanvasGrid extends Canvas {
             }
         }
 
-    }
-
-    public float getScale() {
-        return (scale > 0) ? scale : getFitScale();
     }
 
     public int getOffset() {

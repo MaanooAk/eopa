@@ -82,8 +82,10 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
 
             final BufferedImage image = ((CanvasImage) scene.canvas).getImage();
 
-            scene.getHeaderMenuItem().setText(name + "  " + image.getWidth() + "x" + image.getHeight() + " "
+            if (image != null) {
+                scene.getHeaderMenuItem().setText(name + "  " + image.getWidth() + "x" + image.getHeight() + " "
                     + image.getColorModel().getComponentSize().length);
+            }
 
             directory.setCurrent(newPath);
         }
