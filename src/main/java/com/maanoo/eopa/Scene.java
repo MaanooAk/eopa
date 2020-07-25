@@ -2,6 +2,7 @@ package com.maanoo.eopa;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -349,8 +350,26 @@ public class Scene {
         }
 
         if (viewing) {
-            menu.add(new JSeparator());
 
+            if (!single) {
+                menu.add(new JSeparator());
+                final CanvasGrid cg = (CanvasGrid) c;
+
+                createMenuItem(menu, "Horizontal Expand", KeyEvent.VK_U, () -> {
+                    cg.changeGrid(1, 0);
+                }, c);
+                createMenuItem(menu, "Horizontal Shrink", KeyEvent.VK_Y, () -> {
+                    cg.changeGrid(-1, 0);
+                }, c);
+                createMenuItem(menu, "Vertical Expand", KeyEvent.VK_6, () -> {
+                    cg.changeGrid(0, -1);
+                }, c);
+                createMenuItem(menu, "Vertical Shrink", KeyEvent.VK_H, () -> {
+                    cg.changeGrid(0, 1);
+                }, c);
+            }
+
+            menu.add(new JSeparator());
             createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
                 final Color newBackground = invertColor(c.getBackground());
                 c.setBackground(Config.Active.background = newBackground);
@@ -400,7 +419,11 @@ public class Scene {
 
     private static void fitWindow(JFrame frame, final CanvasImage c, int padding) {
 
+        frame.setExtendedState(Frame.NORMAL);
+
         final BufferedImage image = c.getImage();
+        if (image == null) return;
+
         final int borderW = frame.getWidth() - c.getWidth();
         final int borderH = frame.getHeight() - c.getHeight();
 

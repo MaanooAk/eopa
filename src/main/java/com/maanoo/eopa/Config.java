@@ -2,6 +2,7 @@ package com.maanoo.eopa;
 
 import java.awt.Color;
 
+
 public class Config {
 
     public static final Config Active = new Config();
@@ -15,4 +16,7 @@ public class Config {
 
     public int startWidth = 800;
     public int startHeight = 600;
+
+    public int gridW = 8;
+    public int gridH = 6;
 }

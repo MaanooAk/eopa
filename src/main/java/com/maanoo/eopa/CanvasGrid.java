@@ -19,14 +19,16 @@ public class CanvasGrid extends Canvas {
     public CanvasGrid(ImageCollection directory) {
         this.directory = directory;
 
+        setBackground(Config.Active.background);
+        scale = Config.Active.scaleGrid;
+        gridW = Config.Active.gridW;
+        gridH = Config.Active.gridH;
+
         final int index = directory.getAll().indexOf(directory.getCurrent());
         if (index != -1) {
             // TODO clean up rounding
             addOffset(((index - gridH / 2 * gridW) / gridW) * gridW);
         }
-
-        setBackground(Config.Active.background);
-        scale = Config.Active.scaleGrid;
     }
 
     // TODO simplify, this was re-factored out of else
@@ -119,7 +121,19 @@ public class CanvasGrid extends Canvas {
 
         // TODO limit also the end
 
+        offset = (offset / gridW) * gridW;
         repaint();
+    }
+
+    public void changeGrid(int dw, int dh) {
+        gridW += dw;
+        gridH += dh;
+
+        offset = (offset / gridW) * gridW;
+        repaint();
+
+        Config.Active.gridW = gridW;
+        Config.Active.gridH = gridH;
     }
 
 }
