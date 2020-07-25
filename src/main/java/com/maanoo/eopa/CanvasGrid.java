@@ -16,7 +16,7 @@ public class CanvasGrid extends Canvas {
 
     public int gridW = 8;
     public int gridH = 6;
-    public int offset = 0;
+    private int offset = 0;
 
     public CanvasGrid(ImageDirectory directory) {
         this.directory = directory;
@@ -106,6 +106,21 @@ public class CanvasGrid extends Canvas {
 
     public float getScale() {
         return (scale > 0) ? scale : getFitScale();
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void addOffset(int d) {
+        offset += d;
+
+        final int screenOffset = gridW * gridH;
+        if (offset < -screenOffset) offset = -screenOffset;
+
+        // TODO limit also the end
+
+        repaint();
     }
 
     private static Color invertColor(Color color) {

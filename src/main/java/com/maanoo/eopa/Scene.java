@@ -52,7 +52,7 @@ public class Scene {
         final CanvasImage c = new CanvasImage(ImageLoader.load(path, false));
 
         final String name = path.getFileName().toString();
-        final JPopupMenu menu = createMenu(frame, path, c, name, true);
+        final JPopupMenu menu = createMenu(frame, path, c, name, true, true);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -61,7 +61,20 @@ public class Scene {
                 super.mousePressed(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    // TODO move image
+                    // TODO on drag, move image
+
+                    final boolean edgeL = e.getX() < 50;
+                    final boolean edgeR = e.getX() > c.getWidth() - 50;
+
+                    if (edgeL) {
+                        frame.setImage(frame.getDirectory().next(-1));
+
+                    } else if (edgeR) {
+                        frame.setImage(frame.getDirectory().next(+1));
+
+                    } else if (e.getY() > c.getHeight() - 50) {
+                        frame.setImage(null);
+                    }
 
                 } else if (e.getButton() == MouseEvent.BUTTON2) {
                     menu.show(c, 0, 0);
@@ -165,7 +178,7 @@ public class Scene {
         final CanvasGrid c = new CanvasGrid(new ImageDirectory(path));
 
         final String name = path.getParent().getFileName().toString();
-        final JPopupMenu menu = createMenu(frame, path, c, name, false);
+        final JPopupMenu menu = createMenu(frame, path, c, name, false, true);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -174,21 +187,44 @@ public class Scene {
                 super.mousePressed(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
+                    final boolean edgeU = e.getY() < 50;
+                    final boolean edgeD = e.getY() > c.getHeight() - 50;
 
-                    final int x = c.gridW * e.getX() / c.getWidth();
-                    final int y = c.gridH * e.getY() / c.getHeight();
-                    final int index = y * c.gridW + x + c.offset;
+                    if (edgeU) {
+                        c.addOffset(-c.gridW);
 
-                    final List<Path> all = frame.getDirectory().getAll();
-                    if (index >= 0 && index < all.size()) {
-                        frame.setImage(all.get(index));
+                    } else if (edgeD) {
+                        c.addOffset(+c.gridW);
+
+                    } else {
+
+                        final int x = c.gridW * e.getX() / c.getWidth();
+                        final int y = c.gridH * e.getY() / c.getHeight();
+                        final int index = y * c.gridW + x + c.getOffset();
+
+                        final List<Path> all = frame.getDirectory().getAll();
+                        if (index >= 0 && index < all.size()) {
+                            frame.setImage(all.get(index));
+                        }
                     }
 
                 } else if (e.getButton() == MouseEvent.BUTTON2) {
                     menu.show(c, 0, 0);
 
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    menu.show(c, 0, 0);
+
+                    final int x = c.gridW * e.getX() / c.getWidth();
+                    final int y = c.gridH * e.getY() / c.getHeight();
+                    final int index = y * c.gridW + x + c.getOffset();
+
+                    final List<Path> all = frame.getDirectory().getAll();
+                    if (index >= 0 && index < all.size()) {
+                        final Path path = all.get(index);
+
+                        final JPopupMenu smenu = createMenu(null, path, null,
+                                path.getFileName().toString(), true, false);
+                        smenu.show(c, e.getX(), e.getY());
+                    }
 
                 }
             }
@@ -197,12 +233,17 @@ public class Scene {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 final boolean pos = e.getWheelRotation() > 0;
 
-                if (e.isShiftDown() || e.isAltDown() || e.isControlDown()) {
+                final boolean edgeU = e.getY() < 50;
+                final boolean edgeD = e.getY() > c.getHeight() - 50;
+                final boolean edgeL = e.getX() < 50;
+                final boolean edgeR = e.getX() > c.getWidth() - 50;
+
+                if (e.isShiftDown() || e.isAltDown() || e.isControlDown() || edgeD || edgeU || edgeL || edgeR) {
 
                     if (pos) {
-                        c.offset += c.gridW;
+                        c.addOffset(+c.gridW);
                     } else {
-                        c.offset -= c.gridW;
+                        c.addOffset(-c.gridW);
                     }
 
                 } else {
@@ -211,8 +252,8 @@ public class Scene {
                     } else {
                         c.scale = c.getScale() * 1.1f;
                     }
+                    c.repaint();
                 }
-                c.repaint();
             }
         };
 
@@ -247,12 +288,10 @@ public class Scene {
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    c.offset += c.gridW;
-                    c.repaint();
+                    c.addOffset(+c.gridW);
 
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_UP) {
-                    c.offset -= c.gridW;
-                    c.repaint();
+                    c.addOffset(-c.gridW);
                 }
 
             }
@@ -262,85 +301,96 @@ public class Scene {
         return new Scene(menu, c, mouseListener, keyListener);
     }
 
-    private static JPopupMenu createMenu(EopaFrame frame, Path path, Canvas c, String name, boolean single) {
+    private static JPopupMenu createMenu(EopaFrame frame, Path path, Canvas c, String name,
+            boolean single, boolean viewing) {
         final JPopupMenu menu = new JPopupMenu();
 
         final JMenuItem nameMenuItem = new JMenuItem(name);
         menu.add(nameMenuItem).setEnabled(false);
-        menu.add(new JSeparator());
 
-        createMenuItem(menu, "Scale to Fit", KeyEvent.VK_F, () -> {
-            c.scale = -2;
-        }, c);
-        createMenuItem(menu, "Scale of 1", KeyEvent.VK_1, () -> {
-            c.scale = 1;
-        }, c);
-        createMenuItem(menu, "Scale of 4", KeyEvent.VK_2, () -> {
-            c.scale = 4;
-        }, c);
-        createMenuItem(menu, "Scale of 8", KeyEvent.VK_3, () -> {
-            c.scale = 8;
-        }, c);
-        createMenuItem(menu, "Scale of 16", KeyEvent.VK_4, () -> {
-            c.scale = 16;
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Copy image", KeyEvent.VK_I, () -> {
-            ClipboardManager.set(path);
-        }, c);
-        createMenuItem(menu, "Copy image filename", KeyEvent.VK_C, () -> {
-            ClipboardManager.set(path.getFileName().toString());
-        }, c);
-        createMenuItem(menu, "Copy image path", KeyEvent.VK_P, () -> {
-            ClipboardManager.set(path.toString());
-        }, c);
-        createMenuItem(menu, "Copy directory path", KeyEvent.VK_D, () -> {
-            ClipboardManager.set(path.getParent().toString());
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
-            c.setBackground(invertColor(c.getBackground()));
-        }, c);
-
-        createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
-            // TODO
-            JOptionPane.showMessageDialog(frame, "TODO");
-        }, c);
-
-        createMenuItem(menu, "Lock Dynamic Attributes", KeyEvent.VK_L, () -> {
-            c.locked = !c.locked;
-        }, c);
-
-        menu.add(new JSeparator());
-
-        createMenuItem(menu, "Top Most Window", KeyEvent.VK_T, () -> {
-            frame.setAlwaysOnTop(!frame.isAlwaysOnTop());
-        }, c);
-
-        if (single) {
-            final CanvasImage ci = (CanvasImage) c;
-
-            createMenuItem(menu, "Fit Window", KeyEvent.VK_S, () -> {
-                fitWindow(frame, ci, 0);
+        if (viewing) {
+            menu.add(new JSeparator());
+            createMenuItem(menu, "Scale to Fit", KeyEvent.VK_F, () -> {
+                c.scale = -2;
             }, c);
-            createMenuItem(menu, "Fit Window Padded", KeyEvent.VK_W, () -> {
-                fitWindow(frame, ci, 2);
-            }, c);
-            createMenuItem(menu, "Scale of 1 and Fit Window", KeyEvent.VK_Q, () -> {
+            createMenuItem(menu, "Scale of 1", KeyEvent.VK_1, () -> {
                 c.scale = 1;
-                c.currentScale = 1;
-                fitWindow(frame, ci, 0);
+            }, c);
+            createMenuItem(menu, "Scale of 4", KeyEvent.VK_2, () -> {
+                c.scale = 4;
+            }, c);
+            createMenuItem(menu, "Scale of 8", KeyEvent.VK_3, () -> {
+                c.scale = 8;
+            }, c);
+            createMenuItem(menu, "Scale of 16", KeyEvent.VK_4, () -> {
+                c.scale = 16;
             }, c);
         }
 
-        createMenuItem(menu, "Fullscreen", KeyEvent.VK_F11, () -> {
-            final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-            device.setFullScreenWindow(device.getFullScreenWindow() == null ? frame : null);
-        }, c);
+        menu.add(new JSeparator());
+        if (single) {
+            createMenuItem(menu, "Copy image", KeyEvent.VK_I, () -> {
+                ClipboardManager.set(path);
+            }, c);
+            createMenuItem(menu, "Copy image filename", KeyEvent.VK_C, () -> {
+                ClipboardManager.set(path.getFileName().toString());
+            }, c);
+            createMenuItem(menu, "Copy image path", KeyEvent.VK_P, () -> {
+                ClipboardManager.set(path.toString());
+            }, c);
+            createMenuItem(menu, "Copy directory path", KeyEvent.VK_D, () -> {
+                ClipboardManager.set(path.getParent().toString());
+            }, c);
+        } else {
+            createMenuItem(menu, "Copy directory path", KeyEvent.VK_D, () -> {
+                ClipboardManager.set(path.toString());
+            }, c);
+        }
+
+        if (viewing) {
+            menu.add(new JSeparator());
+
+            createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
+                c.setBackground(invertColor(c.getBackground()));
+            }, c);
+
+            createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
+                // TODO
+                JOptionPane.showMessageDialog(frame, "TODO");
+            }, c);
+
+            createMenuItem(menu, "Lock Dynamic Attributes", KeyEvent.VK_L, () -> {
+                c.locked = !c.locked;
+            }, c);
+
+            menu.add(new JSeparator());
+
+            createMenuItem(menu, "Top Most Window", KeyEvent.VK_T, () -> {
+                frame.setAlwaysOnTop(!frame.isAlwaysOnTop());
+            }, c);
+
+            if (single) {
+                final CanvasImage ci = (CanvasImage) c;
+
+                createMenuItem(menu, "Fit Window", KeyEvent.VK_S, () -> {
+                    fitWindow(frame, ci, 0);
+                }, c);
+                createMenuItem(menu, "Fit Window Padded", KeyEvent.VK_W, () -> {
+                    fitWindow(frame, ci, 2);
+                }, c);
+                createMenuItem(menu, "Scale of 1 and Fit Window", KeyEvent.VK_Q, () -> {
+                    c.scale = 1;
+                    c.currentScale = 1;
+                    fitWindow(frame, ci, 0);
+                }, c);
+            }
+
+            createMenuItem(menu, "Fullscreen", KeyEvent.VK_F11, () -> {
+                final GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+                device.setFullScreenWindow(device.getFullScreenWindow() == null ? frame : null);
+            }, c);
+
+        }
         return menu;
     }
 
@@ -369,8 +419,10 @@ public class Scene {
             @Override
             public void actionPerformed(ActionEvent e) {
                 action.run();
-                c.invalidate();
-                c.repaint();
+                if (c != null) {
+                    c.invalidate();
+                    c.repaint();
+                }
             }
         });
 
