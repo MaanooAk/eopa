@@ -4,27 +4,29 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.nio.file.Path;
 
 
 @SuppressWarnings("serial")
 public class CanvasImage extends Canvas {
 
-    private BufferedImage image;
+    private Path path;
 
-    public CanvasImage(BufferedImage image) {
-        setImage(image);
+    public CanvasImage(Path path) {
+        this.path = path;
     }
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    public void setImage(Path path) {
+        this.path = path;
         repaint();
     }
 
     public BufferedImage getImage() {
-        return image;
+        return ImageLoader.load(path, false);
     }
 
     private float getFitScale() { // TODO simplify, this was refactored out of else
+        final BufferedImage image = getImage();
 
         final int cw = (int) (getWidth() * (1 - ViewBorder));
         final int ch = (int) (getHeight() * (1 - ViewBorder));
@@ -59,6 +61,7 @@ public class CanvasImage extends Canvas {
         super.paintComponent(graphics, mode);
         final Graphics2D g = (Graphics2D) graphics;
 
+        final BufferedImage image = getImage();
         if (image == null) return;
 
         final float scale;

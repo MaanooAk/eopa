@@ -11,7 +11,6 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class CanvasGrid extends Canvas {
 
-    private BufferedImage image;
     private ImageDirectory directory;
 
     public int gridW = 8;
@@ -21,14 +20,17 @@ public class CanvasGrid extends Canvas {
     public CanvasGrid(ImageDirectory directory) {
         this.directory = directory;
 
-        image = ImageLoader.load(directory.getCurrent(), false);
+        final int index = directory.getAll().indexOf(directory.getCurrent());
+        if (index != -1) {
+            // TODO clean up rounding
+            addOffset(((index - gridH / 2 * gridW) / gridW) * gridW);
+        }
     }
 
-    public BufferedImage getImage() {
-        return image;
-    }
+    // TODO simplify, this was re-factored out of else
+    private float getFitScale() {
 
-    private float getFitScale() { // TODO simplify, this was refactored out of else
+        final BufferedImage image = ImageLoader.load(directory.getCurrent(), false);
 
         final int cw = (int) (getWidth() * (1 - ViewBorder)) / gridW;
         final int ch = (int) (getHeight() * (1 - ViewBorder)) / gridH;
@@ -62,8 +64,6 @@ public class CanvasGrid extends Canvas {
     public void paintComponent(Graphics graphics, PaintMode mode) {
         super.paintComponent(graphics, mode);
         final Graphics2D g = (Graphics2D) graphics;
-
-        if (image == null) return;
 
         final float scale;
         if (!locked) {

@@ -29,12 +29,10 @@ public class Scene {
 
     public final JPopupMenu menu;
     public final Canvas canvas;
-
     public final MouseAdapter mouseListener;
     public final KeyAdapter keyListener;
 
     public Scene(JPopupMenu menu, Canvas canvas, MouseAdapter mouseListener, KeyAdapter keyListener) {
-        super();
         this.menu = menu;
         this.canvas = canvas;
         this.mouseListener = mouseListener;
@@ -49,7 +47,7 @@ public class Scene {
 
     public static Scene createImage(EopaFrame frame, Path path) {
 
-        final CanvasImage c = new CanvasImage(ImageLoader.load(path, false));
+        final CanvasImage c = new CanvasImage(path);
 
         final String name = path.getFileName().toString();
         final JPopupMenu menu = createMenu(frame, path, c, name, true, true);
@@ -397,6 +395,7 @@ public class Scene {
     // ===
 
     private static void fitWindow(JFrame frame, final CanvasImage c, int padding) {
+
         final BufferedImage image = c.getImage();
         final int borderW = frame.getWidth() - c.getWidth();
         final int borderH = frame.getHeight() - c.getHeight();
