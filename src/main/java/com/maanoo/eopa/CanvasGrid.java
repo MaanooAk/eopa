@@ -103,7 +103,7 @@ public class CanvasGrid extends Canvas {
                 g.setClip(ix * getWidth() / gridW, iy * getHeight() / gridH,
                         getWidth() / gridW - 1, getHeight() / gridH - 1);
 
-                g.drawImage(image, dx, dy, dw, dh, this);
+                g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
             }
         }
 

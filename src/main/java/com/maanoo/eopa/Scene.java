@@ -373,6 +373,7 @@ public class Scene {
             createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
                 final Color newBackground = invertColor(c.getBackground());
                 c.setBackground(Config.Active.background = newBackground);
+                c.repaint();
             }, c);
 
             createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {

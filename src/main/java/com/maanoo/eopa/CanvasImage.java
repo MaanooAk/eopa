@@ -94,7 +94,7 @@ public class CanvasImage extends Canvas {
             g.fillRect(dx, dy, dw, dh);
 
         } else {
-            g.drawImage(image, dx, dy, dw, dh, this);
+            g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
         }
     }
 
