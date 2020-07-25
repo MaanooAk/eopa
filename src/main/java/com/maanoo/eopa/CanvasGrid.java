@@ -10,13 +10,13 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class CanvasGrid extends Canvas {
 
-    private ImageDirectory directory;
+    private ImageCollection directory;
 
     public int gridW = 8;
     public int gridH = 6;
     private int offset = 0;
 
-    public CanvasGrid(ImageDirectory directory) {
+    public CanvasGrid(ImageCollection directory) {
         this.directory = directory;
 
         final int index = directory.getAll().indexOf(directory.getCurrent());

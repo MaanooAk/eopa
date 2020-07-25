@@ -11,15 +11,11 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class EopaFrame extends JFrame implements WatcherManager.Listener {
 
-    private final ImageDirectory directory;
+    private final ImageCollection directory;
 
     private Scene scene;
 
-    public EopaFrame(Path path) {
-        this(new ImageDirectory(path));
-    }
-
-    public EopaFrame(ImageDirectory directory) {
+    public EopaFrame(ImageCollection directory) {
         this.directory = directory;
 
         getContentPane().setLayout(new BorderLayout());
@@ -101,7 +97,7 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
         scene.canvas.repaint();
     }
 
-    public final ImageDirectory getDirectory() {
+    public final ImageCollection getDirectory() {
         return directory;
     }
 }

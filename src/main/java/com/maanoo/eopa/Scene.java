@@ -174,7 +174,7 @@ public class Scene {
 
     public static Scene createGrid(EopaFrame frame, Path path) {
 
-        final CanvasGrid c = new CanvasGrid(new ImageDirectory(path));
+        final CanvasGrid c = new CanvasGrid(frame.getDirectory());
 
         final String name = path.getParent().getFileName().toString();
         final JPopupMenu menu = createMenu(frame, path, c, name, false, true);

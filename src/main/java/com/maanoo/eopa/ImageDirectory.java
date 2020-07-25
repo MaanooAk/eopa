@@ -8,37 +8,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class ImageDirectory {
+public final class ImageDirectory extends ImageCollection {
 
     private Path directory;
-    private Path current;
 
     public ImageDirectory(Path current) {
+        super(current);
         this.directory = current.getParent();
-        this.current = current;
     }
 
-    public void setCurrent(Path current) {
-        this.current = current;
-    }
-
-    public Path next(int direction) {
-
-        final List<Path> list = getAll();
-        if (list.size() == 0) return current;
-
-        final int index = list.indexOf(current);
-
-        final int newIndex;
-        if (index == -1 || index + direction == list.size() || index + direction == -1) {
-            newIndex = direction < 0 ? (list.size() - 1) : 0;
-        } else {
-            newIndex = index + direction;
-        }
-
-        return current = list.get(newIndex);
-    }
-
+    @Override
     public List<Path> getAll() {
         try {
             return Files.list(directory)
@@ -51,13 +30,4 @@ public class ImageDirectory {
             return Arrays.asList();
         }
     }
-
-    public Path getDirectory() {
-        return directory;
-    }
-
-    public Path getCurrent() {
-        return current;
-    }
-
 }

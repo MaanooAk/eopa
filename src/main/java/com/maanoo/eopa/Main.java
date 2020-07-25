@@ -41,11 +41,11 @@ public final class Main {
         }
 
         if (paths.size() == 1) {
-            final EopaFrame frame = new EopaFrame(paths.get(0));
+            final EopaFrame frame = new EopaFrame(new ImageDirectory(paths.get(0)));
             frame.setVisible(true);
 
         } else {
-            final EopaFrame frame = new EopaFrame(paths.get(0));
+            final EopaFrame frame = new EopaFrame(new ImageList(paths));
             frame.setVisible(true);
         }
     }
