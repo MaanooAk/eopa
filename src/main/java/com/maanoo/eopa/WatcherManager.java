@@ -64,7 +64,7 @@ public final class WatcherManager {
                 for (final WatchEvent<?> event : key.pollEvents()) {
                     final Path context = (Path) event.context();
 //                    System.out.println(context);
-                    if (names.contains(context.toString())) {
+                    if (names.contains(context.toString()) || ImageLoader.filterImage(context)) {
                         listener.onFileChange(context);
                     }
                 }
