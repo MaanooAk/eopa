@@ -19,17 +19,34 @@ public abstract class Canvas extends JPanel {
     public float currentScale = 0;
     public boolean currentInter = false;
 
+    private boolean painting;
+    private boolean requestRepaint;
+
     public enum PaintMode {
         Normal, Alpha;
     }
 
     @Override
     public final void paintComponent(Graphics g) {
+        painting = true;
         paintComponent(g, PaintMode.Normal);
+        painting = false;
+
+        if (requestRepaint) repaint();
     }
 
     public void paintComponent(Graphics graphics, PaintMode mode) {
         super.paintComponent(graphics);
+    }
+
+    @Override
+    public void repaint() {
+        if (!painting) {
+            requestRepaint = false;
+            super.repaint();
+        } else {
+            requestRepaint = true;
+        }
     }
 
     protected abstract float getFitScale();
