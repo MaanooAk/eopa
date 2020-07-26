@@ -19,4 +19,6 @@ public class Config {
 
     public int gridW = 8;
     public int gridH = 6;
+
+    public boolean BackgroundImageLoading = true;
 }
