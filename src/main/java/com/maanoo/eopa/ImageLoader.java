@@ -1,14 +1,10 @@
 package com.maanoo.eopa;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import javax.imageio.ImageIO;
 
 
 public final class ImageLoader {
@@ -17,25 +13,16 @@ public final class ImageLoader {
 
     // ===
 
-    private static final HashMap<Path, BufferedImage> store = new HashMap<Path, BufferedImage>();
+    private static final HashMap<Path, LazyImage> store = new HashMap<Path, LazyImage>();
 
-    public static BufferedImage load(Path path, boolean force) {
+    public static LazyImage load(Path path, boolean force) {
         if (!force) {
-            final BufferedImage storedImage = store.get(path);
+            final LazyImage storedImage = store.get(path);
             if (storedImage != null) return storedImage;
         }
-        final BufferedImage image = loadImage(path);
+        final LazyImage image = new LazyImage(path);
         store.put(path, image);
         return image;
-    }
-
-    private static BufferedImage loadImage(Path path) {
-
-        try {
-            return ImageIO.read(path.toFile());
-        } catch (final IOException e) {
-            return null;
-        }
     }
 
     // ===
