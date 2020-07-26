@@ -5,12 +5,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 
 
 public final class LazyImage {
@@ -102,19 +104,17 @@ public final class LazyImage {
 
     // ===
 
+    private static final ExecutorService backgroundService = Executors
+            .newFixedThreadPool(Math.max(2, Runtime.getRuntime().availableProcessors() - 1));
+
     public void loadInBackground(Consumer<LazyImage> listener) {
-        new SwingWorker<BufferedImage, Void>() {
 
-            @Override
-            protected BufferedImage doInBackground() throws Exception {
-                return getImage();
-            }
-
-            @Override
-            protected void done() {
+        backgroundService.execute(() -> {
+            getImage();
+            SwingUtilities.invokeLater(() -> {
                 listener.accept(LazyImage.this);
-            }
-        }.execute();
+            });
+        });
     }
 
     public boolean isLoaded() {
