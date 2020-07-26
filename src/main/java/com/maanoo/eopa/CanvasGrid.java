@@ -35,7 +35,8 @@ public class CanvasGrid extends Canvas {
     @Override
     protected float getFitScale() {
 
-        final BufferedImage image = ImageLoader.load(directory.getCurrent(), false);
+        final BufferedImage image = ImageLoader.load(directory.getCurrent(), false).getImage();
+//        if (image == null) return 1;
 
         final int cw = (int) (getWidth() * (1 - ViewBorder)) / gridW;
         final int ch = (int) (getHeight() * (1 - ViewBorder)) / gridH;
@@ -86,26 +87,45 @@ public class CanvasGrid extends Canvas {
 
         final List<Path> all = directory.getAll();
 
-        for (int ix = 0; ix < gridW; ix++) {
-            for (int iy = 0; iy < gridH; iy++) {
+        for (int iy = 0; iy < gridH; iy++) {
+            for (int ix = 0; ix < gridW; ix++) {
                 final int index = ix + iy * gridW + offset;
                 if (index < 0 || index >= all.size()) continue;
 
-                final BufferedImage image = ImageLoader.load(all.get(index), false);
-                if (image == null) continue;
+                final LazyImage lazyImage = ImageLoader.load(all.get(index), false);
 
-                final int dw = (int) (scale * image.getWidth());
-                final int dh = (int) (scale * image.getHeight());
+                if (lazyImage.isLoaded() || !Config.Active.BackgroundImageLoading) {
+                    final BufferedImage image = lazyImage.getImage();
 
-                final int dx = ix * getWidth() / gridW + (getWidth() / gridW - dw) / 2;
-                final int dy = iy * getHeight() / gridH + (getHeight() / gridH - dh) / 2;
+                    if (image != null) {
+                        drawImage(g, image, scale, ix, iy);
+                    } else {
+                        drawImage(g, Images.Failed, 1, ix, iy);
+                    }
+                } else {
+                    drawImage(g, Images.Loading, 1, ix, iy);
 
-                g.setClip(ix * getWidth() / gridW, iy * getHeight() / gridH,
-                        getWidth() / gridW - 1, getHeight() / gridH - 1);
-
-                g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
+                    lazyImage.loadInBackground(t -> repaint());
+                }
             }
         }
+
+    }
+
+    private void drawImage(Graphics2D g, BufferedImage image, float scale, int ix, int iy) {
+
+        if (image == null) return;
+
+        final int dw = (int) (scale * image.getWidth());
+        final int dh = (int) (scale * image.getHeight());
+
+        final int dx = ix * getWidth() / gridW + (getWidth() / gridW - dw) / 2;
+        final int dy = iy * getHeight() / gridH + (getHeight() / gridH - dh) / 2;
+
+        g.setClip(ix * getWidth() / gridW, iy * getHeight() / gridH,
+                getWidth() / gridW - 1, getHeight() / gridH - 1);
+
+        g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
 
     }
 

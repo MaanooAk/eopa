@@ -25,7 +25,7 @@ public class CanvasImage extends Canvas {
     }
 
     public BufferedImage getImage() {
-        return ImageLoader.load(path, false);
+        return ImageLoader.load(path, false).getImage();
     }
 
     // TODO simplify, this was refactored out of else
