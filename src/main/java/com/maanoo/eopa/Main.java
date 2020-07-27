@@ -16,6 +16,7 @@ public final class Main {
     // TODO move zoomed in images
     // TODO unload images
     // TODO clone window
+    // TODO rotate view of image
 
     public static void main(String[] args) {
 

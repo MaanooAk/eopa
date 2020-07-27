@@ -284,7 +284,7 @@ public class Scene {
                     menu.show(c, 0, 0);
 
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
-                    frame.setImage(path);
+                    c.repaint();
 
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
