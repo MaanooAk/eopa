@@ -13,7 +13,6 @@ public final class Main {
 
     private Main() {}
 
-    // TODO move zoomed in images
     // TODO unload images
     // TODO clone window
     // TODO rotate view of image

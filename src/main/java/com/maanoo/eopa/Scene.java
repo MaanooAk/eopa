@@ -92,9 +92,12 @@ public class Scene {
 
                         final String[] options = new String[] {
                                 hex(colors[0]) + hex(colors[1]) + hex(colors[2]),
+                                e.getX() + "," + e.getY()
                         };
-                        final int selected = JOptionPane.showOptionDialog(null,
-                                String.format("R: %d\nG: %d\nB: %d", colors[0], colors[1], colors[2]), "Color",
+                        final int selected = JOptionPane.showOptionDialog(frame,
+                                String.format("X: %d\nY: %d\n\nR: %d\nG: %d\nB: %d\n",
+                                        e.getX(), e.getY(), colors[0], colors[1], colors[2]),
+                                "Info",
                                 JOptionPane.OK_OPTION,
                                 JOptionPane.INFORMATION_MESSAGE, null, options, null);
 
@@ -484,6 +487,7 @@ public class Scene {
         final float pad = padding == 0 ? 0 : Math.max(scale * padding, 10);
         frame.setSize((int) (image.getWidth() * scale + borderW + pad),
                 (int) (image.getHeight() * scale + borderH + pad));
+        c.recenter();
     }
 
     private static Color invertColor(Color color) {
