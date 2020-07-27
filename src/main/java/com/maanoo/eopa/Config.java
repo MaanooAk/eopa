@@ -7,6 +7,8 @@ public class Config {
 
     public static final Config Active = new Config();
 
+    // TODO normalize names
+
     public Color background = Color.BLACK;
 
     public float scaleImage = -1;
@@ -21,4 +23,8 @@ public class Config {
     public int gridH = 6;
 
     public boolean BackgroundImageLoading = true;
+
+    public Color HighlightColor = new Color(0x20_0ba2cd, true);
+    public int HighlightWidth = edgeBorder;
+
 }

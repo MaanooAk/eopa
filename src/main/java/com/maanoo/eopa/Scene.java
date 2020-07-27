@@ -25,6 +25,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import com.maanoo.eopa.Canvas.Side;
+
 
 public class Scene {
 
@@ -57,22 +59,18 @@ public class Scene {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                final int edgeBorder = Config.Active.edgeBorder;
+                mouseMoved(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     // TODO on drag, move image
 
-                    final boolean edgeL = e.getX() < edgeBorder;
-                    final boolean edgeR = e.getX() > c.getWidth() - edgeBorder;
-
-                    if (edgeL) {
+                    if (c.getHighlight() == Side.L) {
                         frame.setImage(frame.getDirectory().next(-1));
 
-                    } else if (edgeR) {
+                    } else if (c.getHighlight() == Side.R) {
                         frame.setImage(frame.getDirectory().next(+1));
 
-                    } else if (e.getY() > c.getHeight() - edgeBorder) {
+                    } else if (c.getHighlight() == Side.D || c.getHighlight() == Side.U) {
                         frame.setImage(null);
                     }
 
@@ -114,6 +112,25 @@ public class Scene {
             private String hex(int num) {
                 if (num < 0x10) return "0" + Integer.toString(num, 16);
                 return Integer.toString(num, 16);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                final int edgeBorder = Config.Active.edgeBorder;
+
+                final Side side;
+                if (e.getY() < edgeBorder) side = Side.U;
+                else if (e.getX() < edgeBorder) side = Side.L;
+                else if (e.getY() > c.getHeight() - edgeBorder) side = Side.D;
+                else if (e.getX() > c.getWidth() - edgeBorder) side = Side.R;
+                else side = Side.None;
+
+                c.setHighlight(side);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                c.setHighlight(Side.None);
             }
 
             @Override
@@ -184,17 +201,14 @@ public class Scene {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
+                mouseMoved(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    final int edgeBorder = Config.Active.edgeBorder;
-                    final boolean edgeU = e.getY() < edgeBorder;
-                    final boolean edgeD = e.getY() > c.getHeight() - edgeBorder;
 
-                    if (edgeU) {
+                    if (c.getHighlight() == Side.U || c.getHighlight() == Side.L) {
                         c.addOffset(-c.gridW);
 
-                    } else if (edgeD) {
+                    } else if (c.getHighlight() == Side.D || c.getHighlight() == Side.R) {
                         c.addOffset(+c.gridW);
 
                     } else {
@@ -231,16 +245,29 @@ public class Scene {
             }
 
             @Override
+            public void mouseMoved(MouseEvent e) {
+                final int edgeBorder = Config.Active.edgeBorder;
+
+                final Side side;
+                if (e.getY() < edgeBorder) side = Side.U;
+                else if (e.getX() < edgeBorder) side = Side.L;
+                else if (e.getY() > c.getHeight() - edgeBorder) side = Side.D;
+                else if (e.getX() > c.getWidth() - edgeBorder) side = Side.R;
+                else side = Side.None;
+
+                c.setHighlight(side);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                c.setHighlight(Side.None);
+            }
+
+            @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 final boolean pos = e.getWheelRotation() > 0;
 
-                final int edgeBorder = Config.Active.edgeBorder;
-                final boolean edgeU = e.getY() < edgeBorder;
-                final boolean edgeD = e.getY() > c.getHeight() - edgeBorder;
-                final boolean edgeL = e.getX() < edgeBorder;
-                final boolean edgeR = e.getX() > c.getWidth() - edgeBorder;
-
-                if (e.isShiftDown() || e.isAltDown() || e.isControlDown() || edgeD || edgeU || edgeL || edgeR) {
+                if (e.isShiftDown() || e.isAltDown() || e.isControlDown() || c.getHighlight() != Side.None) {
 
                     if (pos) {
                         c.addOffset(+c.gridW);

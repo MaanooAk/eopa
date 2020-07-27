@@ -36,7 +36,7 @@ public class CanvasGrid extends Canvas {
     protected float getFitScale() {
 
         final BufferedImage image = ImageLoader.load(directory.getCurrent(), false).getImage();
-//        if (image == null) return 1;
+        if (image == null) return 1;
 
         final int cw = (int) (getWidth() * (1 - ViewBorder)) / gridW;
         final int ch = (int) (getHeight() * (1 - ViewBorder)) / gridH;
@@ -109,7 +109,9 @@ public class CanvasGrid extends Canvas {
                 }
             }
         }
+        g.setClip(0, 0, getWidth(), getHeight());
 
+        paintHighlight(g);
     }
 
     private void drawImage(Graphics2D g, BufferedImage image, float scale, int ix, int iy) {

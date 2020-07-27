@@ -39,6 +39,8 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
             removeMouseWheelListener(scene.mouseListener);
             removeKeyListener(scene.keyListener);
             getContentPane().remove(scene.canvas);
+            // move over the highlight side
+            newScene.canvas.setHighlight(scene.canvas.getHighlight());
         }
         scene = newScene;
 
@@ -47,6 +49,7 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
         getContentPane().add(scene.canvas, BorderLayout.CENTER);
         // set up the listeners
         scene.canvas.addMouseListener(scene.mouseListener);
+        scene.canvas.addMouseMotionListener(scene.mouseListener);
         addMouseWheelListener(scene.mouseListener);
         addKeyListener(scene.keyListener);
 

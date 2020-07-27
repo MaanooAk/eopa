@@ -22,6 +22,12 @@ public abstract class Canvas extends JPanel {
     private boolean painting;
     private boolean requestRepaint;
 
+    public enum Side {
+        None, R, D, L, U;
+    }
+
+    private Side highlight = Side.None;
+
     public enum PaintMode {
         Normal, Alpha;
     }
@@ -39,6 +45,18 @@ public abstract class Canvas extends JPanel {
         super.paintComponent(graphics);
     }
 
+    protected final void paintHighlight(Graphics g) {
+        if (highlight == Side.None) return;
+
+        g.setColor(Config.Active.HighlightColor);
+        final int hwidth = Config.Active.HighlightWidth;
+
+        if (highlight == Side.L) g.fillRect(0, 0, hwidth, getHeight());
+        else if (highlight == Side.U) g.fillRect(0, 0, getWidth(), hwidth);
+        else if (highlight == Side.R) g.fillRect(getWidth() - hwidth, 0, hwidth, getHeight());
+        else if (highlight == Side.D) g.fillRect(0, getHeight() - hwidth, getWidth(), hwidth);
+    }
+
     @Override
     public void repaint() {
         if (!painting) {
@@ -53,6 +71,16 @@ public abstract class Canvas extends JPanel {
 
     public final float getScale() {
         return (scale > 0) ? scale : getFitScale();
+    }
+
+    public final void setHighlight(Side highlight) {
+        if (this.highlight == highlight) return;
+        this.highlight = highlight;
+        repaint();
+    }
+
+    public final Side getHighlight() {
+        return highlight;
     }
 
     protected static void setInterpolation(Graphics g, boolean bilinear) {

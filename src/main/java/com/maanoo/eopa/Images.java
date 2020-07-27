@@ -12,7 +12,6 @@ public final class Images {
 
     public static final BufferedImage Loading = loadResourceImage("image-loading.png");
     public static final BufferedImage Failed = loadResourceImage("image-failed.png");
-    public static final BufferedImage Right = loadResourceImage("image-right.png");
 
     private static BufferedImage loadResourceImage(String path) {
         try {

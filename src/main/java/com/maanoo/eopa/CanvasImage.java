@@ -96,6 +96,8 @@ public class CanvasImage extends Canvas {
         } else {
             g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
         }
+
+        paintHighlight(g);
     }
 
     private static Color invertColor(Color color) {
