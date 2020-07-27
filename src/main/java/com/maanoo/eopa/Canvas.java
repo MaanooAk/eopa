@@ -13,7 +13,7 @@ public abstract class Canvas extends JPanel {
     public static final float ViewBorder = 0;
     public static final int MaxScale = 32;
 
-    public float scale = -1;
+    protected float scale = -1;
     public boolean locked = false;
 
     public float currentScale = 0;
@@ -65,6 +65,10 @@ public abstract class Canvas extends JPanel {
         } else {
             requestRepaint = true;
         }
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
 
     protected abstract float getFitScale();

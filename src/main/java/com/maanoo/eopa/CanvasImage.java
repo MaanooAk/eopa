@@ -12,6 +12,9 @@ public class CanvasImage extends Canvas {
 
     private Path path;
 
+    private int cx;
+    private int cy;
+
     public CanvasImage(Path path) {
         this.path = path;
 
@@ -62,6 +65,28 @@ public class CanvasImage extends Canvas {
     }
 
     @Override
+    public void setScale(float scale) {
+
+        if (this.scale > 0 && scale > 0) {
+            cx *= scale / this.scale;
+            cy *= scale / this.scale;
+        }
+
+        this.scale = scale;
+    }
+
+    public void moveCenter(int dx, int dy) {
+        cx += dx;
+        cy += dy;
+        repaint();
+    }
+
+    public void recenter() {
+        cx = cy = 0;
+        repaint();
+    }
+
+    @Override
     public void paintComponent(Graphics graphics, PaintMode mode) {
         super.paintComponent(graphics, mode);
         final Graphics2D g = (Graphics2D) graphics;
@@ -94,7 +119,7 @@ public class CanvasImage extends Canvas {
             g.fillRect(dx, dy, dw, dh);
 
         } else {
-            g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
+            g.drawImage(image, cx + dx, cy + dy, dw, dh, getBackground(), this);
         }
 
         paintHighlight(g);
@@ -103,4 +128,5 @@ public class CanvasImage extends Canvas {
     private static Color invertColor(Color color) {
         return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
+
 }

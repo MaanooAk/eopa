@@ -137,12 +137,32 @@ public class Scene {
             public void mouseWheelMoved(MouseWheelEvent e) {
 
                 if (e.getWheelRotation() > 0) {
-                    c.scale = c.getScale() / 1.1f;
+                    c.setScale(c.getScale() / 1.1f);
                 } else {
-                    c.scale = c.getScale() * 1.1f;
+                    c.setScale(c.getScale() * 1.1f);
                 }
                 c.repaint();
             }
+
+            private MouseEvent lastDragEvent = null;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (lastDragEvent != null) {
+
+                    final int dx = e.getX() - lastDragEvent.getX();
+                    final int dy = e.getY() - lastDragEvent.getY();
+
+                    c.moveCenter(dx, dy);
+                }
+                lastDragEvent = e;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                lastDragEvent = null;
+            }
+
         };
 
         final KeyAdapter keyListener = new KeyAdapter() {
@@ -277,9 +297,9 @@ public class Scene {
 
                 } else {
                     if (pos) {
-                        c.scale = c.getScale() / 1.1f;
+                        c.setScale(c.getScale() / 1.1f);
                     } else {
-                        c.scale = c.getScale() * 1.1f;
+                        c.setScale(c.getScale() * 1.1f);
                     }
                     c.repaint();
                 }
@@ -340,20 +360,26 @@ public class Scene {
         if (viewing) {
             menu.add(new JSeparator());
             createMenuItem(menu, "Scale to Fit", KeyEvent.VK_F, () -> {
-                c.scale = -2;
+                c.setScale(-2);
             }, c);
             createMenuItem(menu, "Scale of 1", KeyEvent.VK_1, () -> {
-                c.scale = 1;
+                c.setScale(1);
             }, c);
             createMenuItem(menu, "Scale of 4", KeyEvent.VK_2, () -> {
-                c.scale = 4;
+                c.setScale(4);
             }, c);
             createMenuItem(menu, "Scale of 8", KeyEvent.VK_3, () -> {
-                c.scale = 8;
+                c.setScale(8);
             }, c);
             createMenuItem(menu, "Scale of 16", KeyEvent.VK_4, () -> {
-                c.scale = 16;
+                c.setScale(16);
             }, c);
+
+            if (single) {
+                createMenuItem(menu, "Recenter", KeyEvent.VK_R, () -> {
+                    ((CanvasImage) c).recenter();
+                }, c);
+            }
         }
 
         menu.add(new JSeparator());
@@ -427,7 +453,7 @@ public class Scene {
                     fitWindow(frame, ci, 2);
                 }, c);
                 createMenuItem(menu, "Scale of 1 and Fit Window", KeyEvent.VK_Q, () -> {
-                    c.scale = 1;
+                    c.setScale(1);
                     c.currentScale = 1;
                     fitWindow(frame, ci, 0);
                 }, c);
