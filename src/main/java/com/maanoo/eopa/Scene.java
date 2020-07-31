@@ -119,7 +119,7 @@ public class Scene {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                final int edgeBorder = Config.Active.edgeBorder;
+                final int edgeBorder = Config.Active.HighlightWidth;
 
                 final Side side;
                 if (e.getY() < edgeBorder) side = Side.U;
@@ -269,7 +269,7 @@ public class Scene {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                final int edgeBorder = Config.Active.edgeBorder;
+                final int edgeBorder = Config.Active.HighlightWidth;
 
                 final Side side;
                 if (e.getY() < edgeBorder) side = Side.U;
@@ -431,7 +431,7 @@ public class Scene {
             menu.add(new JSeparator());
             createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
                 final Color newBackground = invertColor(c.getBackground());
-                c.setBackground(Config.Active.background = newBackground);
+                c.setBackground(Config.Active.Background = newBackground);
                 c.repaint();
             }, c);
 

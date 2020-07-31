@@ -7,24 +7,24 @@ public class Config {
 
     public static final Config Active = new Config();
 
-    // TODO normalize names
+    // ===
 
-    public Color background = Color.BLACK;
-
-    public float scaleImage = -1;
-    public float scaleGrid = -1;
-
-    public int edgeBorder = 50;
-
-    public int startWidth = 800;
-    public int startHeight = 600;
-
-    public int gridW = 8;
-    public int gridH = 6;
+    public int Width = 800;
+    public int Height = 600;
 
     public boolean BackgroundImageLoading = true;
 
+    public int GridCols = 8;
+    public int GridRows = 6;
+
+    public Color Background = Color.BLACK;
+
     public Color HighlightColor = new Color(0x20_0ba2cd, true);
-    public int HighlightWidth = edgeBorder;
+    public int HighlightWidth = 50;
+
+//    public float ScaleImage = -1;
+//    public float ScaleGrid = -1;
+
+    // ===
 
 }

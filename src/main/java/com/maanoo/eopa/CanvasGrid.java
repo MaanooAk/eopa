@@ -19,10 +19,10 @@ public class CanvasGrid extends Canvas {
     public CanvasGrid(ImageCollection directory) {
         this.directory = directory;
 
-        setBackground(Config.Active.background);
-        scale = Config.Active.scaleGrid;
-        gridW = Config.Active.gridW;
-        gridH = Config.Active.gridH;
+        setBackground(Config.Active.Background);
+        scale = -1;
+        gridW = Config.Active.GridCols;
+        gridH = Config.Active.GridRows;
 
         final List<Path> all = directory.getAll();
         final int index = all.indexOf(directory.getCurrent());
@@ -165,8 +165,8 @@ public class CanvasGrid extends Canvas {
         offset = (offset / gridW) * gridW;
         repaint();
 
-        Config.Active.gridW = gridW;
-        Config.Active.gridH = gridH;
+        Config.Active.GridCols = gridW;
+        Config.Active.GridRows = gridH;
     }
 
     public int getGridW() {

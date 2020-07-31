@@ -20,8 +20,8 @@ public class CanvasImage extends Canvas {
     public CanvasImage(Path path) {
         this.path = path;
 
-        setBackground(Config.Active.background);
-        scale = Config.Active.scaleImage;
+        setBackground(Config.Active.Background);
+        scale = -1;
     }
 
     public void setImage(Path path) {

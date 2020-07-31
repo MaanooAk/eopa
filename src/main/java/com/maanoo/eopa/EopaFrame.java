@@ -31,7 +31,7 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
 
         // get the current size in order to pass it to the new canvas
         final Dimension size = scene == null
-                ? new Dimension(Config.Active.startWidth, Config.Active.startHeight)
+                ? new Dimension(Config.Active.Width, Config.Active.Height)
                 : scene.canvas.getSize();
 
         if (scene != null) {
