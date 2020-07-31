@@ -24,10 +24,17 @@ public class CanvasGrid extends Canvas {
         gridW = Config.Active.gridW;
         gridH = Config.Active.gridH;
 
-        final int index = directory.getAll().indexOf(directory.getCurrent());
+        final List<Path> all = directory.getAll();
+        final int index = all.indexOf(directory.getCurrent());
         if (index != -1) {
-            // TODO clean up rounding
-            addOffset(((index - gridH / 2 * gridW) / gridW) * gridW);
+            addOffset(index - gridH * gridW / 2 + gridW);
+        }
+
+        // shrink the grid for small number of images
+        while ((gridW > gridH ? (gridW - 1) * gridH : gridW * (gridH - 1)) >= all.size()) {
+            if (gridW > gridH) gridW--;
+            else gridH--;
+            offset = 0;
         }
     }
 
