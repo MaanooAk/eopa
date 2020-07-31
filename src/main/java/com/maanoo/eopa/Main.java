@@ -15,8 +15,7 @@ public final class Main {
 
     // TODO unload images
     // TODO clone window
-    // TODO rotate view of image
-    // TODO handle less than grid count
+    // TODO handle max offset
 
     public static void main(String[] args) {
 

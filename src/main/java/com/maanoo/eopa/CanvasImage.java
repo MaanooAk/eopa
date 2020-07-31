@@ -15,6 +15,8 @@ public class CanvasImage extends Canvas {
     private int cx;
     private int cy;
 
+    private int rotation;
+
     public CanvasImage(Path path) {
         this.path = path;
 
@@ -81,11 +83,6 @@ public class CanvasImage extends Canvas {
         repaint();
     }
 
-    public void recenter() {
-        cx = cy = 0;
-        repaint();
-    }
-
     @Override
     public void paintComponent(Graphics graphics, PaintMode mode) {
         super.paintComponent(graphics, mode);
@@ -114,12 +111,20 @@ public class CanvasImage extends Canvas {
         final int dx = (getWidth() - dw) / 2;
         final int dy = (getHeight() - dh) / 2;
 
+        if (rotation != 0) {
+            g.rotate(rotation * Math.PI / 2, getWidth() / 2, getHeight() / 2);
+        }
+
         if (mode == PaintMode.Alpha) {
             g.setColor(invertColor(getBackground()));
             g.fillRect(dx, dy, dw, dh);
 
         } else {
             g.drawImage(image, cx + dx, cy + dy, dw, dh, getBackground(), this);
+        }
+
+        if (rotation != 0) {
+            g.rotate(-rotation * Math.PI / 2, getWidth() / 2, getHeight() / 2);
         }
 
         paintHighlight(g);
@@ -129,4 +134,23 @@ public class CanvasImage extends Canvas {
         return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
 
+    public void rotate(int d) {
+        rotation = (rotation + d) % 4;
+    }
+
+    public void resetCenter() {
+        cx = cy = 0;
+        repaint();
+    }
+
+    public void resetRotation() {
+        rotation = 0;
+        repaint();
+    }
+
+    public void reset() {
+        cx = cy = 0;
+        rotation = 0;
+        repaint();
+    }
 }

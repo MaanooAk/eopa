@@ -379,8 +379,11 @@ public class Scene {
             }, c);
 
             if (single) {
-                createMenuItem(menu, "Recenter", KeyEvent.VK_R, () -> {
-                    ((CanvasImage) c).recenter();
+                createMenuItem(menu, "Rotate", KeyEvent.VK_R, () -> {
+                    ((CanvasImage) c).rotate(1);
+                }, c);
+                createMenuItem(menu, "Reset", KeyEvent.VK_E, () -> {
+                    ((CanvasImage) c).reset();
                 }, c);
             }
         }
@@ -487,7 +490,7 @@ public class Scene {
         final float pad = padding == 0 ? 0 : Math.max(scale * padding, 10);
         frame.setSize((int) (image.getWidth() * scale + borderW + pad),
                 (int) (image.getHeight() * scale + borderH + pad));
-        c.recenter();
+        c.resetCenter();
     }
 
     private static Color invertColor(Color color) {
