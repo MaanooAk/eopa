@@ -33,7 +33,7 @@ public class CanvasImage extends Canvas {
         return ImageLoader.load(path, false).getImage();
     }
 
-    // TODO simplify, this was refactored out of else
+    // TODO simplify, this was re-factored out of else
     @Override
     protected float getFitScale() {
         final BufferedImage image = getImage();
@@ -130,12 +130,20 @@ public class CanvasImage extends Canvas {
         paintHighlight(g);
     }
 
+    public int getImageWidth() {
+        return (rotation % 2 == 0) ? getImage().getWidth() : getImage().getHeight();
+    }
+
+    public int getImageHeight() {
+        return (rotation % 2 == 1) ? getImage().getWidth() : getImage().getHeight();
+    }
+
     private static Color invertColor(Color color) {
         return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
 
     public void rotate(int d) {
-        rotation = (rotation + d) % 4;
+        rotation = (rotation + d + 4) % 4;
     }
 
     public void resetCenter() {

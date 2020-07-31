@@ -229,16 +229,16 @@ public class Scene {
                 if (e.getButton() == MouseEvent.BUTTON1) {
 
                     if (c.getHighlight() == Side.U || c.getHighlight() == Side.L) {
-                        c.addOffset(-c.gridW);
+                        c.addOffsetGrid(-1);
 
                     } else if (c.getHighlight() == Side.D || c.getHighlight() == Side.R) {
-                        c.addOffset(+c.gridW);
+                        c.addOffsetGrid(+1);
 
                     } else {
 
-                        final int x = c.gridW * e.getX() / c.getWidth();
-                        final int y = c.gridH * e.getY() / c.getHeight();
-                        final int index = y * c.gridW + x + c.getOffset();
+                        final int x = c.getGridW() * e.getX() / c.getWidth();
+                        final int y = c.getGridH() * e.getY() / c.getHeight();
+                        final int index = y * c.getGridW() + x + c.getOffset();
 
                         final List<Path> all = frame.getDirectory().getAll();
                         if (index >= 0 && index < all.size()) {
@@ -251,9 +251,9 @@ public class Scene {
 
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
 
-                    final int x = c.gridW * e.getX() / c.getWidth();
-                    final int y = c.gridH * e.getY() / c.getHeight();
-                    final int index = y * c.gridW + x + c.getOffset();
+                    final int x = c.getGridW() * e.getX() / c.getWidth();
+                    final int y = c.getGridH() * e.getY() / c.getHeight();
+                    final int index = y * c.getGridW() + x + c.getOffset();
 
                     final List<Path> all = frame.getDirectory().getAll();
                     if (index >= 0 && index < all.size()) {
@@ -293,9 +293,9 @@ public class Scene {
                 if (e.isShiftDown() || e.isAltDown() || e.isControlDown() || c.getHighlight() != Side.None) {
 
                     if (pos) {
-                        c.addOffset(+c.gridW);
+                        c.addOffsetGrid(+1);
                     } else {
-                        c.addOffset(-c.gridW);
+                        c.addOffsetGrid(-1);
                     }
 
                 } else {
@@ -340,10 +340,10 @@ public class Scene {
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    c.addOffset(+c.gridW);
+                    c.addOffsetGrid(+1);
 
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_UP) {
-                    c.addOffset(-c.gridW);
+                    c.addOffsetGrid(-1);
                 }
 
             }
@@ -380,7 +380,7 @@ public class Scene {
 
             if (single) {
                 createMenuItem(menu, "Rotate", KeyEvent.VK_R, () -> {
-                    ((CanvasImage) c).rotate(1);
+                    ((CanvasImage) c).rotate(-1);
                 }, c);
                 createMenuItem(menu, "Reset", KeyEvent.VK_E, () -> {
                     ((CanvasImage) c).reset();
@@ -488,8 +488,8 @@ public class Scene {
 
         final float scale = c.currentScale;
         final float pad = padding == 0 ? 0 : Math.max(scale * padding, 10);
-        frame.setSize((int) (image.getWidth() * scale + borderW + pad),
-                (int) (image.getHeight() * scale + borderH + pad));
+        frame.setSize((int) (c.getImageWidth() * scale + borderW + pad),
+                (int) (c.getImageHeight() * scale + borderH + pad));
         c.resetCenter();
     }
 

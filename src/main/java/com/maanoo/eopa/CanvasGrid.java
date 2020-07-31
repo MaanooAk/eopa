@@ -12,8 +12,8 @@ public class CanvasGrid extends Canvas {
 
     private ImageCollection directory;
 
-    public int gridW = 8;
-    public int gridH = 6;
+    private int gridW = 8;
+    private int gridH = 6;
     private int offset = 0;
 
     public CanvasGrid(ImageCollection directory) {
@@ -154,6 +154,10 @@ public class CanvasGrid extends Canvas {
         repaint();
     }
 
+    public void addOffsetGrid(int d) {
+        addOffset(d * gridW);
+    }
+
     public void changeGrid(int dw, int dh) {
         gridW += dw;
         gridH += dh;
@@ -163,6 +167,14 @@ public class CanvasGrid extends Canvas {
 
         Config.Active.gridW = gridW;
         Config.Active.gridH = gridH;
+    }
+
+    public int getGridW() {
+        return gridW;
+    }
+
+    public int getGridH() {
+        return gridH;
     }
 
 }

@@ -80,7 +80,6 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
             }
 
             final BufferedImage image = ((CanvasImage) scene.canvas).getImage();
-
             if (image != null) {
                 setIconImage(image);
 
