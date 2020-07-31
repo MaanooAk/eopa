@@ -101,7 +101,7 @@ public class CanvasGrid extends Canvas {
 
                 final LazyImage lazyImage = ImageLoader.load(all.get(index), false);
 
-                if (lazyImage.isLoaded() || !Config.Active.BackgroundImageLoading) {
+                if (lazyImage.isLoaded() || Config.Active.BackgroundLoading == 0) {
                     final BufferedImage image = lazyImage.getImage();
 
                     if (image != null) {

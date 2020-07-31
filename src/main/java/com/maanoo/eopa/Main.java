@@ -16,9 +16,10 @@ public final class Main {
     // TODO unload images
     // TODO clone window
     // TODO handle max offset
-    // TODO store/load the config
 
     public static void main(String[] args) {
+
+        Config.load();
 
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
