@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class CanvasGrid extends Canvas {
 
-    private ImageCollection directory;
+    private final ImageCollection directory;
 
     private int gridW = 8;
     private int gridH = 6;

@@ -13,6 +13,7 @@ public abstract class Canvas extends JPanel {
 
     public static final float ViewBorder = 0;
 
+    /** Shared background color between all canvas instances. */
     public static Color Background;
 
     protected float scale = -1;

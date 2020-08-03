@@ -3,6 +3,7 @@ package com.maanoo.eopa;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
@@ -40,6 +41,11 @@ public final class LazyImage {
 
     private void loadReader() {
         try {
+
+            if (Files.isDirectory(path)) {
+                state = State.Failed;
+                return;
+            }
 
             stream = ImageIO.createImageInputStream(path.toFile());
 
