@@ -18,8 +18,6 @@ public final class Config {
     public int Width = 800;
     public int Height = 600;
 
-    public int BackgroundLoading = 1;
-
     public int GridCols = 8;
     public int GridRows = 6;
 
@@ -29,8 +27,10 @@ public final class Config {
     public Color HighlightColor = new Color(0x20_0ba2cd, true);
     public int HighlightWidth = 50;
 
-//    public float ScaleImage = -1;
-//    public float ScaleGrid = -1;
+    public int MaxScale = 32;
+
+    public int BackgroundLoading = 1;
+
 
     // ===
 

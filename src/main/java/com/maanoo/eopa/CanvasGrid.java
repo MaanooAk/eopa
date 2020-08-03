@@ -63,8 +63,9 @@ public class CanvasGrid extends Canvas {
 
         if (scale > 1 && iw * ih > 4096 && this.scale == -1) {
             scale = 1;
-        } else if (scale > MaxScale) {
-            scale = MaxScale;
+        } else {
+            final int maxScale = Config.Active.MaxScale;
+            if (scale > maxScale) scale = maxScale;
         }
 
         // round

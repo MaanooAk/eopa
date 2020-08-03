@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 public abstract class Canvas extends JPanel {
 
     public static final float ViewBorder = 0;
-    public static final int MaxScale = 32;
 
     public static Color Background;
 
