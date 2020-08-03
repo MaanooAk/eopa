@@ -19,8 +19,6 @@ public final class Main {
 
     public static void main(String[] args) {
 
-        Config.load();
-
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -45,6 +43,9 @@ public final class Main {
         if (paths.size() == 0) {
             System.exit(1);
         }
+
+        Config.load();
+        Canvas.Background = Config.Active.Background1;
 
         if (paths.size() == 1) {
             final EopaFrame frame = new EopaFrame(new ImageDirectory(paths.get(0)));

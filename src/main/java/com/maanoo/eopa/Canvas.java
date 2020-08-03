@@ -1,5 +1,6 @@
 package com.maanoo.eopa;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -12,6 +13,8 @@ public abstract class Canvas extends JPanel {
 
     public static final float ViewBorder = 0;
     public static final int MaxScale = 32;
+
+    public static Color Background;
 
     protected float scale = -1;
     public boolean locked = false;
@@ -85,6 +88,15 @@ public abstract class Canvas extends JPanel {
 
     public final Side getHighlight() {
         return highlight;
+    }
+
+    public final void changeBackground() {
+        final Color c1 = Config.Active.Background1;
+        final Color c2 = Config.Active.Background2;
+        final Color newBackground = !Background.equals(c1) ? c1 : c2;
+        // set the new background
+        setBackground(Background = newBackground);
+        repaint();
     }
 
     protected static void setInterpolation(Graphics g, boolean bilinear) {

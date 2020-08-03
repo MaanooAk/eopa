@@ -23,7 +23,8 @@ public final class Config {
     public int GridCols = 8;
     public int GridRows = 6;
 
-    public Color Background = Color.BLACK;
+    public Color Background1 = Color.BLACK;
+    public Color Background2 = Color.WHITE;
 
     public Color HighlightColor = new Color(0x20_0ba2cd, true);
     public int HighlightWidth = 50;

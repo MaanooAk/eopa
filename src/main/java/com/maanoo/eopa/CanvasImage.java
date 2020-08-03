@@ -20,7 +20,7 @@ public class CanvasImage extends Canvas {
     public CanvasImage(Path path) {
         this.path = path;
 
-        setBackground(Config.Active.Background);
+        setBackground(Background);
         scale = -1;
     }
 
@@ -116,7 +116,9 @@ public class CanvasImage extends Canvas {
         }
 
         if (mode == PaintMode.Alpha) {
-            g.setColor(invertColor(getBackground()));
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
             g.fillRect(dx, dy, dw, dh);
 
         } else {
@@ -136,10 +138,6 @@ public class CanvasImage extends Canvas {
 
     public int getImageHeight() {
         return (rotation % 2 == 1) ? getImage().getWidth() : getImage().getHeight();
-    }
-
-    private static Color invertColor(Color color) {
-        return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
 
     public void rotate(int d) {

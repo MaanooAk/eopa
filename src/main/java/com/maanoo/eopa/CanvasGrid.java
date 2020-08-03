@@ -19,7 +19,7 @@ public class CanvasGrid extends Canvas {
     public CanvasGrid(ImageCollection directory) {
         this.directory = directory;
 
-        setBackground(Config.Active.Background);
+        setBackground(Background);
         scale = -1;
         gridW = Config.Active.GridCols;
         gridH = Config.Active.GridRows;

@@ -1,6 +1,5 @@
 package com.maanoo.eopa;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
@@ -85,7 +84,7 @@ public class Scene {
                     c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Alpha);
                     buffer.getData().getPixel(e.getX(), e.getY(), colors);
 
-                    if (colors[0] != c.getBackground().getRed()) {
+                    if (colors[0] == 255) {
 
                         c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Normal);
                         buffer.getData().getPixel(e.getX(), e.getY(), colors);
@@ -430,9 +429,7 @@ public class Scene {
 
             menu.add(new JSeparator());
             createMenuItem(menu, "Change Background", KeyEvent.VK_B, () -> {
-                final Color newBackground = invertColor(c.getBackground());
-                c.setBackground(Config.Active.Background = newBackground);
-                c.repaint();
+                c.changeBackground();
             }, c);
 
 //            createMenuItem(menu, "Change Grid Lines", KeyEvent.VK_G, () -> {
@@ -491,10 +488,6 @@ public class Scene {
         frame.setSize((int) (c.getImageWidth() * scale + borderW + pad),
                 (int) (c.getImageHeight() * scale + borderH + pad));
         c.resetCenter();
-    }
-
-    private static Color invertColor(Color color) {
-        return color != Color.BLACK ? Color.BLACK : Color.WHITE;
     }
 
     private static void createMenuItem(JPopupMenu menu, String text, int shortcut, Runnable action, JPanel c) {
