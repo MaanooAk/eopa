@@ -29,17 +29,18 @@ import com.maanoo.eopa.Canvas.Side;
 
 public class Scene {
 
-    public final Canvas canvas;
-    public final MouseAdapter mouseListener;
-    public final KeyAdapter keyListener;
+    public Canvas canvas;
+    public MouseAdapter mouseListener;
+    public KeyAdapter keyListener;
 
     public JPopupMenu menu;
 
-    public Scene(Canvas canvas, MouseAdapter mouseListener, KeyAdapter keyListener, JPopupMenu menu) {
+    public Scene set(Canvas canvas, MouseAdapter mouseListener, KeyAdapter keyListener, JPopupMenu menu) {
         this.canvas = canvas;
         this.mouseListener = mouseListener;
         this.keyListener = keyListener;
         this.menu = menu;
+        return this;
     }
 
     public JMenuItem getHeaderMenuItem() {
@@ -49,10 +50,11 @@ public class Scene {
     // ===
 
     public static Scene createImage(EopaFrame frame, Path path) {
+        final Scene scene = new Scene();
 
         final CanvasImage c = new CanvasImage(path);
 
-        final JPopupMenu menu = createImageMenu(frame, path, c);
+        scene.menu = createImageMenu(frame, path, c);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -61,24 +63,19 @@ public class Scene {
                 mouseMoved(e);
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    // TODO on drag, move image
 
                     if (c.getHighlight() == Side.L) {
-                        final Path path = frame.getDirectory().next(-1);
-                        frame.setImage(path);
-                        // TODO change also the JPopupMenu menu
+                        frame.setImage(frame.getDirectory().next(-1));
 
                     } else if (c.getHighlight() == Side.R) {
-                        final Path path = frame.getDirectory().next(+1);
-                        frame.setImage(path);
-                        // TODO change also the JPopupMenu menu
+                        frame.setImage(frame.getDirectory().next(+1));
 
                     } else if (c.getHighlight() == Side.D || c.getHighlight() == Side.U) {
                         frame.setImage(null);
                     }
 
                 } else if (e.getButton() == MouseEvent.BUTTON2) {
-                    menu.show(c, 0, 0);
+                    scene.menu.show(c, 0, 0);
 
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
 
@@ -109,7 +106,7 @@ public class Scene {
                         }
 
                     } else {
-                        menu.show(c, 0, 0);
+                        scene.menu.show(c, 0, 0);
                     }
 
                 }
@@ -177,8 +174,8 @@ public class Scene {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
 
-                for (int i = 0; i < menu.getComponentCount(); i++) {
-                    final Component comp = menu.getComponent(i);
+                for (int i = 0; i < scene.menu.getComponentCount(); i++) {
+                    final Component comp = scene.menu.getComponent(i);
                     if (comp == null || !(comp instanceof JMenuItem)) continue;
                     final JMenuItem item = (JMenuItem) comp;
 
@@ -193,7 +190,7 @@ public class Scene {
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_F1) {
-                    menu.show(c, 0, 0);
+                    scene.menu.show(c, 0, 0);
 
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     frame.setImage(path);
@@ -213,15 +210,16 @@ public class Scene {
 
         };
 
-        return new Scene(c, mouseListener, keyListener, menu);
+        return scene.set(c, mouseListener, keyListener, scene.menu);
     }
 
     public static Scene createGrid(EopaFrame frame, Path path) {
+        final Scene scene = new Scene();
 
         final CanvasGrid c = new CanvasGrid(frame.getDirectory());
 
         final String name = path.getParent().getFileName().toString();
-        final JPopupMenu menu = createMenu(frame, path, c, name, false, true);
+        scene.menu = createMenu(frame, path, c, name, false, true);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -250,7 +248,7 @@ public class Scene {
                     }
 
                 } else if (e.getButton() == MouseEvent.BUTTON2) {
-                    menu.show(c, 0, 0);
+                    scene.menu.show(c, 0, 0);
 
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
 
@@ -318,8 +316,8 @@ public class Scene {
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
 
-                for (int i = 0; i < menu.getComponentCount(); i++) {
-                    final Component comp = menu.getComponent(i);
+                for (int i = 0; i < scene.menu.getComponentCount(); i++) {
+                    final Component comp = scene.menu.getComponent(i);
                     if (comp == null || !(comp instanceof JMenuItem)) continue;
                     final JMenuItem item = (JMenuItem) comp;
 
@@ -334,7 +332,7 @@ public class Scene {
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_F1) {
-                    menu.show(c, 0, 0);
+                    scene.menu.show(c, 0, 0);
 
                 } else if (e.getKeyCode() == KeyEvent.VK_F5) {
                     c.repaint();
@@ -353,7 +351,7 @@ public class Scene {
 
         };
 
-        return new Scene(c, mouseListener, keyListener, menu);
+        return scene.set(c, mouseListener, keyListener, scene.menu);
     }
 
     public static JPopupMenu createImageMenu(EopaFrame frame, Path path, CanvasImage c) {
