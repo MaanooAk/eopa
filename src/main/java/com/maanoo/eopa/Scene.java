@@ -29,16 +29,17 @@ import com.maanoo.eopa.Canvas.Side;
 
 public class Scene {
 
-    public final JPopupMenu menu;
     public final Canvas canvas;
     public final MouseAdapter mouseListener;
     public final KeyAdapter keyListener;
 
-    public Scene(JPopupMenu menu, Canvas canvas, MouseAdapter mouseListener, KeyAdapter keyListener) {
-        this.menu = menu;
+    public JPopupMenu menu;
+
+    public Scene(Canvas canvas, MouseAdapter mouseListener, KeyAdapter keyListener, JPopupMenu menu) {
         this.canvas = canvas;
         this.mouseListener = mouseListener;
         this.keyListener = keyListener;
+        this.menu = menu;
     }
 
     public JMenuItem getHeaderMenuItem() {
@@ -51,8 +52,7 @@ public class Scene {
 
         final CanvasImage c = new CanvasImage(path);
 
-        final String name = path.getFileName().toString();
-        final JPopupMenu menu = createMenu(frame, path, c, name, true, true);
+        final JPopupMenu menu = createImageMenu(frame, path, c);
 
         final MouseAdapter mouseListener = new MouseAdapter() {
 
@@ -64,10 +64,14 @@ public class Scene {
                     // TODO on drag, move image
 
                     if (c.getHighlight() == Side.L) {
-                        frame.setImage(frame.getDirectory().next(-1));
+                        final Path path = frame.getDirectory().next(-1);
+                        frame.setImage(path);
+                        // TODO change also the JPopupMenu menu
 
                     } else if (c.getHighlight() == Side.R) {
-                        frame.setImage(frame.getDirectory().next(+1));
+                        final Path path = frame.getDirectory().next(+1);
+                        frame.setImage(path);
+                        // TODO change also the JPopupMenu menu
 
                     } else if (c.getHighlight() == Side.D || c.getHighlight() == Side.U) {
                         frame.setImage(null);
@@ -84,7 +88,7 @@ public class Scene {
                     c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Alpha);
                     buffer.getData().getPixel(e.getX(), e.getY(), colors);
 
-                    if (colors[0] == 255) {
+                    if (colors[0] == 255) { // TODO there is a bug here, probably with the buffer image type
 
                         c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Normal);
                         buffer.getData().getPixel(e.getX(), e.getY(), colors);
@@ -209,7 +213,7 @@ public class Scene {
 
         };
 
-        return new Scene(menu, c, mouseListener, keyListener);
+        return new Scene(c, mouseListener, keyListener, menu);
     }
 
     public static Scene createGrid(EopaFrame frame, Path path) {
@@ -349,10 +353,16 @@ public class Scene {
 
         };
 
-        return new Scene(menu, c, mouseListener, keyListener);
+        return new Scene(c, mouseListener, keyListener, menu);
     }
 
-    private static JPopupMenu createMenu(EopaFrame frame, Path path, Canvas c, String name,
+    public static JPopupMenu createImageMenu(EopaFrame frame, Path path, CanvasImage c) {
+
+        final String name = path.getFileName().toString();
+        return createMenu(frame, path, c, name, true, true);
+    }
+
+    public static JPopupMenu createMenu(EopaFrame frame, Path path, Canvas c, String name,
             boolean single, boolean viewing) {
         final JPopupMenu menu = new JPopupMenu();
 

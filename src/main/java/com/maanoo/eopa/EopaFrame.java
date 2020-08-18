@@ -72,8 +72,12 @@ public class EopaFrame extends JFrame implements WatcherManager.Listener {
             final String name = newPath.getFileName().toString();
             setTitle(name);
 
+
             if (scene != null && scene.canvas instanceof CanvasImage) {
-                ((CanvasImage) scene.canvas).setImage(newPath);
+                final CanvasImage canvasImage = (CanvasImage) scene.canvas;
+                canvasImage.setImage(newPath);
+                scene.menu = Scene.createImageMenu(this, newPath, canvasImage);
+
             } else {
                 final Scene scene = Scene.createImage(this, newPath);
                 setScene(scene);
