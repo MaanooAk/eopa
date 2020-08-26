@@ -112,6 +112,7 @@ public class CanvasImage extends Canvas {
         final int dx = (getWidth() - dw) / 2;
         final int dy = (getHeight() - dh) / 2;
 
+        g.translate(cx, cy);
         if (rotation != 0) {
             g.rotate(rotation * Math.PI / 2, getWidth() / 2, getHeight() / 2);
         }
@@ -123,12 +124,13 @@ public class CanvasImage extends Canvas {
             g.fillRect(dx, dy, dw, dh);
 
         } else {
-            g.drawImage(image, cx + dx, cy + dy, dw, dh, getBackground(), this);
+            g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
         }
 
         if (rotation != 0) {
             g.rotate(-rotation * Math.PI / 2, getWidth() / 2, getHeight() / 2);
         }
+        g.translate(-cx, -cy);
 
         paintHighlight(g);
     }
