@@ -3,6 +3,9 @@ package com.maanoo.eopa;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 
@@ -16,6 +19,8 @@ public class CanvasImage extends Canvas {
     private int cy;
 
     private int rotation;
+
+    private AffineTransform transform;
 
     public CanvasImage(Path path) {
         this.path = path;
@@ -124,15 +129,31 @@ public class CanvasImage extends Canvas {
             g.fillRect(dx, dy, dw, dh);
 
         } else {
-            g.drawImage(image, dx, dy, dw, dh, getBackground(), this);
+            g.translate(dx, dy);
+            g.scale(scale, scale);
+
+            transform = g.getTransform();
+            g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), getBackground(), this);
+
         }
 
-        if (rotation != 0) {
-            g.rotate(-rotation * Math.PI / 2, getWidth() / 2, getHeight() / 2);
-        }
-        g.translate(-cx, -cy);
-
+        g.setTransform(new AffineTransform());
         paintHighlight(g);
+    }
+
+    public Point mapCanvasToImage(int x, int y) {
+        final Point p = new Point(x, y);
+        try {
+            transform.inverseTransform(p, p);
+        } catch (final NoninvertibleTransformException e) {
+        }
+        return p;
+    }
+
+    public Point mapImageToCanvas(int x, int y) {
+        final Point p = new Point(x, y);
+        transform.transform(p, p);
+        return p;
     }
 
     public int getImageWidth() {

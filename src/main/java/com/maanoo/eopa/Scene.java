@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -90,13 +91,17 @@ public class Scene {
                         c.paintComponent(buffer.getGraphics(), CanvasImage.PaintMode.Normal);
                         buffer.getData().getPixel(e.getX(), e.getY(), colors);
 
+                        final Point mappedPoint = c.mapCanvasToImage(e.getX(), e.getY());
+                        final int x = (int) mappedPoint.getX();
+                        final int y = (int) mappedPoint.getY();
+
                         final String[] options = new String[] {
                                 hex(colors[0]) + hex(colors[1]) + hex(colors[2]),
-                                e.getX() + "," + e.getY()
+                                x + "," + y
                         };
                         final int selected = JOptionPane.showOptionDialog(frame,
                                 String.format("X: %d\nY: %d\n\nR: %d\nG: %d\nB: %d\n",
-                                        e.getX(), e.getY(), colors[0], colors[1], colors[2]),
+                                        x, y, colors[0], colors[1], colors[2]),
                                 "Info",
                                 JOptionPane.OK_OPTION,
                                 JOptionPane.INFORMATION_MESSAGE, null, options, null);
